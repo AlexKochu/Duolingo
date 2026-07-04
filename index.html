@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigger-Based Consent — High-Fidelity Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --kid-bg: linear-gradient(180deg, #FFF7EB 0%, #FFEED4 100%);
+    --kid-card: #FFFFFF;
+    --kid-primary: #FF6B4A;
+    --kid-primary-dark: #E0532F;
+    --kid-secondary: #3FBF7F;
+    --kid-accent: #FFC93C;
+    --kid-text: #2B2B2B;
+    --kid-sub: #7A7568;
+    
+    --gd-bg: linear-gradient(180deg, #F3F6F4 0%, #E5EAE7 100%);
+    --gd-card: #FFFFFF;
+    --gd-primary: #2F5D50;
+    --gd-primary-dark: #20423A;
+    --gd-accent: #C97B3D;
+    --gd-danger: #B24545;
+    --gd-text: #1F2A24;
+    --gd-sub: #5C6B64;
+    
+    --radius-kid: 24px;
+    --radius-gd: 12px;
+    --phone-bg: #12141C;
+    --phone-border: #2D313F;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    min-height: 100vh;
+    background: radial-gradient(circle at top right, #1F2438 0%, #0F111A 100%);
+    color: #F3F4F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 30px;
+    overflow-x: hidden;
+  }
+
+  /* Main Workspace Grid */
+  .workspace {
+    display: flex;
+    max-width: 1280px;
+    width: 100%;
+    gap: 40px;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  /* Educational Sidebar */
+  .edu-panel {
+    flex: 1;
+    min-width: 320px;
+    max-width: 400px;
+    background: rgba(22, 28, 45, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .edu-tag {
+    background: rgba(255, 107, 74, 0.15);
+    color: #FF856B;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 6px 12px;
+    border-radius: 12px;
+    width: fit-content;
+  }
+
+  .edu-title {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #FFF, #C0CADB);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .edu-desc {
+    font-size: 14px;
+    color: #9CA3AF;
+    line-height: 1.6;
+  }
+
+  .edu-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFC93C;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 10px;
+  }
+
+  .edu-feature-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .edu-feature-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .edu-feature-card.active-highlight {
+    border-color: var(--kid-primary);
+    background: rgba(255, 107, 74, 0.05);
+    box-shadow: 0 0 15px rgba(255, 107, 74, 0.2);
+  }
+
+  .edu-feature-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #E5E7EB;
+  }
+
+  .edu-feature-desc {
+    font-size: 12.5px;
+    color: #9CA3AF;
+    line-height: 1.5;
+  }
+
+  .highlight-badge {
+    font-size: 9px;
+    font-weight: 700;
+    color: #FFF;
+    background: var(--kid-primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+
+  /* Demo Stage (Phones container) */
+  .demo-stage {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex: 2;
+  }
+
+  /* Phone Wrappers */
+  .phone-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .phone-label {
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #9CA3AF;
+    background: rgba(255,255,255,0.06);
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  /* High fidelity hardware frame */
+  .phone {
+    width: 350px;
+    height: 750px;
+    background: var(--phone-bg);
+    border-radius: 48px;
+    padding: 12px;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8),
+                0 0 0 4px var(--phone-border),
+                inset 0 0 8px rgba(255, 255, 255, 0.1);
+    position: relative;
+    user-select: none;
+  }
+
+  /* Screen glare overlay */
+  .phone::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 48px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.15) 100%);
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 36px;
+    overflow: hidden;
+    position: relative;
+    background: var(--kid-bg);
+    transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .screen.mode-guardian {
+    background: var(--gd-bg);
+  }
+
+  /* Hardware Notch */
+  .notch {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 25px;
+    background: #000;
+    border-radius: 14px;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .notch-camera {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #111e3b;
+    margin-right: 12px;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.2);
+  }
+
+  .notch-speaker {
+    width: 40px;
+    height: 3px;
+    border-radius: 2px;
+    background: #222;
+  }
+
+  /* Status Bar */
+  .status-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 44px;
+    padding: 10px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11.5px;
+    font-weight: 600;
+    z-index: 90;
+    pointer-events: none;
+  }
+  .kid .status-bar { color: var(--kid-text); }
+  .gd .status-bar { color: var(--gd-text); }
+
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Bottom Home Indicator */
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 2px;
+    z-index: 90;
+  }
+  .screen.mode-guardian .home-indicator {
+    background: rgba(0,0,0,0.2);
+  }
+
+  /* View Container */
+  .view {
+    position: absolute;
+    inset: 0;
+    padding: 54px 18px 24px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.96) translateY(12px);
+    transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .view.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1) translateY(0);
+  }
+
+  /* Global UI Transitions & Animations */
+  .pulse-slow {
+    animation: pulseGlow 2.5s infinite ease-in-out;
+  }
+  
+  @keyframes pulseGlow {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,107,74,0.1)); }
+    50% { transform: scale(1.03); filter: drop-shadow(0 0 8px rgba(255,107,74,0.35)); }
+  }
+
+  .float-slow {
+    animation: floatMascot 4s infinite ease-in-out;
+  }
+
+  @keyframes floatMascot {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Confetti Canvas Overlay */
+  .confetti-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 85;
+  }
+
+  /* Push Notification Toasts */
+  .notification-toast {
+    position: absolute;
+    top: -90px;
+    left: 14px;
+    right: 14px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.02);
+    border-radius: 18px;
+    padding: 12px 16px;
+    z-index: 105;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    backdrop-filter: blur(15px);
+    transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+  }
+
+  .notification-toast.visible {
+    transform: translateY(140px);
+  }
+
+  .nt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4B5563;
+  }
+  .nt-header-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--gd-primary);
+  }
+  .nt-time {
+    color: #9CA3AF;
+  }
+  .nt-body {
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: #1F2937;
+  }
+
+  /* --- KID MODE THEMING --- */
+  .kid .h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 25px;
+    color: var(--kid-text);
+    line-height: 1.15;
+  }
+  
+  .kid .h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--kid-text);
+  }
+
+  .kid p {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: var(--kid-sub);
+    line-height: 1.55;
+  }
+
+  .kid .btn-primary {
+    background: var(--kid-primary);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 15px 24px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 15.5px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 var(--kid-primary-dark);
+    transition: transform 0.1s, box-shadow 0.1s, filter 0.2s;
+    outline: none;
+  }
+
+  .kid .btn-primary:hover {
+    filter: brightness(1.05);
+  }
+
+  .kid .btn-primary:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 var(--kid-primary-dark);
+  }
+
+  .kid .btn-ghost {
+    background: transparent;
+    border: none;
+    color: var(--kid-sub);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+    outline: none;
+  }
+
+  .kid .card {
+    background: var(--kid-card);
+    border-radius: var(--radius-kid);
+    padding: 18px;
+    box-shadow: 0 8px 24px rgba(224, 83, 47, 0.06), 0 2px 8px rgba(0,0,0,0.02);
+    border: 1.5px solid rgba(255, 107, 74, 0.05);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .kid .card:hover {
+    box-shadow: 0 12px 30px rgba(224, 83, 47, 0.1);
+  }
+
+  /* XP / Streak Header widget */
+  .kid-stats-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  
+  .kid-stat-item {
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Highlight Pulse Class */
+  .highlight-pulse-kid {
+    animation: highlightRingKid 1.5s infinite alternate;
+  }
+  
+  @keyframes highlightRingKid {
+    0% { border-color: rgba(255, 107, 74, 0.2); box-shadow: 0 0 4px rgba(255, 107, 74, 0.2); }
+    100% { border-color: rgba(255, 107, 74, 1); box-shadow: 0 0 18px rgba(255, 107, 74, 0.6); }
+  }
+
+  .highlight-pulse-gd {
+    animation: highlightRingGd 1.5s infinite alternate;
+  }
+  
+  @keyframes highlightRingGd {
+    0% { border-color: rgba(47, 93, 80, 0.2); box-shadow: 0 0 4px rgba(47, 93, 80, 0.2); }
+    100% { border-color: rgba(47, 93, 80, 1); box-shadow: 0 0 18px rgba(47, 93, 80, 0.6); }
+  }
+
+  /* --- GUARDIAN MODE THEMING --- */
+  .gd .h1 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--gd-text);
+    line-height: 1.25;
+  }
+
+  .gd .h2 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--gd-text);
+  }
+
+  .gd p {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--gd-sub);
+    line-height: 1.55;
+  }
+
+  .gd .btn-primary {
+    background: var(--gd-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-gd);
+    padding: 14px 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(47, 93, 80, 0.15);
+    transition: transform 0.15s, filter 0.2s;
+    outline: none;
+  }
+  
+  .gd .btn-primary:hover {
+    filter: brightness(1.08);
+  }
+  
+  .gd .btn-primary:active {
+    transform: translateY(2px);
+  }
+
+  .gd .btn-secondary {
+    background: transparent;
+    color: var(--gd-primary);
+    border: 1.5px solid var(--gd-primary);
+    border-radius: var(--radius-gd);
+    padding: 13px 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+    outline: none;
+  }
+  
+  .gd .btn-secondary:hover {
+    background: rgba(47, 93, 80, 0.05);
+  }
+
+  .gd .btn-decline {
+    background: transparent;
+    color: var(--gd-danger);
+    border: 1.5px solid #E3CFC9;
+    border-radius: var(--radius-gd);
+    padding: 13px 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: background 0.2s;
+    outline: none;
+  }
+  
+  .gd .btn-decline:hover {
+    background: rgba(178, 69, 69, 0.05);
+  }
+
+  .gd .card {
+    background: var(--gd-card);
+    border-radius: var(--radius-gd);
+    padding: 16px;
+    border: 1px solid #DDE3E0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .gd .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gd-accent);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .gd-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #E3E9E6;
+    border-radius: 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gd-text);
+    margin-bottom: 16px;
+    width: fit-content;
+  }
+  .gd-header .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gd-primary);
+  }
+
+  /* Utility Spacing */
+  .spacer { flex: 1; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .between { justify-content: space-between; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  
+  /* Mascot */
+  .mascot {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.06);
+  }
+  .mascot.kidm { background: var(--kid-accent); }
+  .mascot.gdm { background: #DCE7E2; }
+
+  /* Premium Toggle Switches */
+  .toggle {
+    position: relative;
+    width: 46px;
+    height: 26px;
+    border-radius: 14px;
+    background: #D8DED9;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .toggle.on {
+    background: var(--gd-primary);
+  }
+  .toggle .knob {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+  }
+  .toggle.on .knob {
+    left: 23px;
+  }
+
+  /* Status Badges */
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 20px;
+    letter-spacing: .02em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .badge.locked { background: #F0E4D6; color: #9A6B2E; border: 1px solid rgba(154,107,46,0.15); }
+  .badge.pending { background: #FDF0DD; color: #B57318; border: 1px solid rgba(181,115,24,0.15); }
+  .badge.verified { background: #DFF0E5; color: #2A7A4E; border: 1px solid rgba(42,122,78,0.15); }
+
+  /* Status Lists */
+  .status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--kid-text);
+  }
+  .status-row span:first-child {
+    font-weight: 500;
+  }
+  .status-row .icon {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Microphone Button */
+  .mic-btn-container {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto;
+  }
+
+  .mic-btn {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: var(--kid-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #2c9962, 0 10px 20px rgba(63, 191, 127, 0.2);
+    border: none;
+    transition: transform 0.1s, box-shadow 0.1s;
+    outline: none;
+  }
+  .mic-btn:hover {
+    filter: brightness(1.05);
+  }
+  .mic-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #2c9962;
+  }
+  .mic-btn.disabled {
+    background: #D9D5C8;
+    box-shadow: 0 6px 0 #b9b6ab;
+    cursor: not-allowed;
+  }
+  .mic-btn.disabled:active {
+    transform: none;
+    box-shadow: 0 6px 0 #b9b6ab;
+  }
+
+  .mic-ring {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    border: 3px solid var(--kid-secondary);
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .mic-btn.listening + .mic-ring {
+    animation: rippleMic 1.5s infinite;
+  }
+  
+  @keyframes rippleMic {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  .caption {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #7A7568;
+    line-height: 1.5;
+    text-align: center;
+  }
+  
+  .benefit-line {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #3f7a5f;
+    font-weight: 600;
+    margin-top: 4px;
+    padding-left: 2px;
+  }
+  
+  .link-line {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--gd-primary);
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  
+  .link-line:hover {
+    background: rgba(47, 93, 80, 0.06);
+    text-decoration: underline;
+  }
+
+  /* Speech wave demo wrapper */
+  .speaking-practice-box {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  #speakingWave {
+    background: rgba(0,0,0,0.04);
+    border-radius: 12px;
+    width: 100%;
+    height: 50px;
+  }
+
+  .speech-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--kid-text);
+  }
+
+  /* Responsive Adjustments */
+  @media(max-width: 1050px) {
+    body { padding: 20px 10px; }
+    .workspace {
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+    .edu-panel {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+
+  /* Simple animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="workspace">
+  
+  <!-- EDUCATIONAL CONTROL & EXPLANATION PANEL -->
+  <div class="edu-panel">
+    <div class="edu-tag">Interactive Explainer</div>
+    <h2 class="edu-title">Trigger-Based Consent</h2>
+    <p class="edu-desc">
+      A progressive UX pattern that prompts parents for permissions <strong>only when the child attempts to use a restricted feature</strong>, rather than clustering legal forms at sign-up.
+    </p>
+
+    <div class="edu-section-title">Explore Core Principles</div>
+    
+    <div class="edu-feature-card" id="card-progressive" onclick="triggerHighlight('progressive')">
+      <div class="edu-feature-header">
+        <span>⏱️ Progressive Disclosure</span>
+        <span class="highlight-badge">Step 2 &amp; 3</span>
+      </div>
+      <div class="edu-feature-desc">
+        Saves friction at sign-up. Let kids jump directly into reading &amp; listening. Explain microphone needs only when they tap "Speaking Practice".
+      </div>
+    </div>
+
+    <div class="edu-feature-card" id="card-contextual" onclick="triggerHighlight('contextual')">
+      <div class="edu-feature-header">
+        <span>💬 Just-in-Time Context</span>
+        <span class="highlight-badge">Step 5</span>
+      </div>
+      <div class="edu-feature-desc">
+        The parent receives a clear reason: <em>"Aisha is learning for 3 days and needs voice verification for pronunciation."</em> This builds instant confidence.
+      </div>
+    </div>
+
+    <div class="edu-feature-card" id="card-granular" onclick="triggerHighlight('granular')">
+      <div class="edu-feature-header">
+        <span>🔧 Granular Parent Controls</span>
+        <span class="highlight-badge">Step 6 &amp; 10</span>
+      </div>
+      <div class="edu-feature-desc">
+        Separates necessary learning requirements (microphone) from optional marketing tracking (personalized ads, analytics).
+      </div>
+    </div>
+
+    <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between;">
+      <span style="font-size: 11px; color: #6B7280;">Haptic Pop: <strong>Synthesized Audio</strong></span>
+      <button class="btn-ghost" style="color: #FF856B; font-size: 11px; padding: 0;" onclick="resetDemo()">↺ Full Reset</button>
+    </div>
+  </div>
+
+  <!-- DEVICES AREA -->
+  <div class="demo-stage">
+
+    <!-- DEVICE 1: CHILD DEVICE (AISHA) -->
+    <div class="phone-wrap">
+      <div class="phone-label">Aisha · child account (12)</div>
+      <div class="phone">
+        <canvas class="confetti-overlay" id="kidConfetti"></canvas>
+        <div class="screen kid" id="screenKid">
+          
+          <div class="notch">
+            <div class="notch-camera"></div>
+            <div class="notch-speaker"></div>
+          </div>
+          
+          <!-- Mock System Status Bar -->
+          <div class="status-bar">
+            <div class="time-widget">9:41</div>
+            <div class="status-icons">
+              <span>📶</span>
+              <span>🛜</span>
+              <span>🔋 85%</span>
+            </div>
+          </div>
+
+          <!-- Kid Notification Toast -->
+          <div class="notification-toast" id="kidToast" onclick="dismissKidToast()">
+            <div class="nt-header">
+              <span class="nt-header-title">💬 Parent Notification</span>
+              <span class="nt-time">now</span>
+            </div>
+            <div class="nt-body" id="kidToastText">
+              Your request was approved!
+            </div>
+          </div>
+
+          <!-- VIEW 1: Signup / Onboarding -->
+          <div class="view active" data-view="1">
+            <div class="stack" style="align-items:center; text-align:center; margin-top:20px;">
+              <div class="mascot kidm float-slow">🦜</div>
+              <h1 class="h1">Let's start learning!</h1>
+              <p>Setup is super fast! We just need your name and age to make your practice lessons perfect.</p>
+            </div>
+            <div class="spacer"></div>
+            <div class="card stack">
+              <div class="h2">👤 Aisha</div>
+              <div class="h2">🎂 Birthday: 14 Mar 2014</div>
+            </div>
+            <div class="spacer"></div>
+            <button class="btn-primary" onclick="changeKidView(2)">Start learning →</button>
+          </div>
+
+          <!-- VIEW 2: Dashboard (Locked Safe Mode) -->
+          <div class="view" data-view="2">
+            <div class="kid-stats-bar">
+              <div class="kid-stat-item">🎓 Aisha</div>
+              <div class="kid-stat-item" id="xpCounter">🔥 Streak: 3d · 🏆 45XP</div>
+            </div>
+            
+            <div class="row between">
+              <span class="h2">My Lessons</span>
+              <span class="badge locked" id="badgeSafeMode">🔒 Safe Mode</span>
+            </div>
+            
+            <div class="card" style="margin-top:10px;" id="highlight-safe-card">
+              <div class="h2" style="font-size:13.5px; margin-bottom:8px;">Lesson Permissions</div>
+              <div class="status-list">
+                <div class="status-row"><span>📖 Reading Lessons</span><span class="icon">✅</span></div>
+                <div class="status-row"><span>🎧 Listening Lessons</span><span class="icon">✅</span></div>
+                <div class="status-row"><span>🎙️ Speaking Practice</span><span class="icon" id="statusSpeaking">🔒</span></div>
+                <div class="status-row"><span>🏆 Leaderboards</span><span class="icon" id="statusLeaderboards">🔒</span></div>
+              </div>
+            </div>
+            
+            <div class="spacer"></div>
+            
+            <!-- Contextual Card triggering consent -->
+            <div class="card stack" style="align-items:center; text-align:center; position: relative;" id="highlight-trigger-btn">
+              <div class="h2" style="font-size:15px;">Unit 3 · Speaking Exercise</div>
+              <p style="font-size:12.5px;">Read the sentence out loud to match our cartoon characters!</p>
+              
+              <div class="mic-btn-container" style="margin-top: 6px;">
+                <button class="mic-btn disabled" onclick="triggerPermissionAsk()">🎤</button>
+                <div class="mic-ring"></div>
+              </div>
+              <p style="font-size:11px; font-weight: 600; color: var(--kid-primary);">Tap Mic to unlock this lesson</p>
+            </div>
+            
+            <div class="spacer"></div>
+            <button class="btn-ghost" onclick="alert('Proceeding with reading lesson...')">Or read a story book instead</button>
+          </div>
+
+          <!-- VIEW 3: Contextual Explanation to Kid -->
+          <div class="view" data-view="3">
+            <div class="stack" style="align-items:center; text-align:center; margin-top:15px;">
+              <div class="mascot kidm float-slow">🔔</div>
+              <h1 class="h1">Ask your parent</h1>
+              <p>To record voice clips for lessons, we need to ask your parent/guardian for microphone access.</p>
+            </div>
+            <div class="spacer"></div>
+            <div class="card" style="background: rgba(255, 107, 74, 0.05); border: 1.5px dashed var(--kid-primary);">
+              <p style="font-weight:600; color: var(--kid-text); font-size:12.5px; text-align: center;">
+                ⚡ Free Play Mode
+              </p>
+              <p style="font-size:11.5px; text-align: center; margin-top:4px;">
+                You can keep reading stories and practicing audio while we send them a message!
+              </p>
+            </div>
+            <div class="spacer"></div>
+            <button class="btn-primary" onclick="sendParentNotification()">Send approval request →</button>
+          </div>
+
+          <!-- VIEW 4: Request Sent state -->
+          <div class="view" data-view="4">
+            <div class="stack" style="align-items:center; text-align:center; margin-top:30px;">
+              <div class="mascot kidm float-slow">📤</div>
+              <h1 class="h1">Request sent!</h1>
+              <p>We've sent an instant review screen link to your parent's phone. Feel free to keep reading.</p>
+            </div>
+            <div class="spacer"></div>
+            <div class="card stack" style="align-items:center; border-color: #2F5D50;">
+              <span style="font-size: 11px; font-weight:700; color: var(--gd-primary); text-transform:uppercase;">Simulation Link</span>
+              <p style="font-size:11px; font-weight:500; text-align:center;">You can now check Priya's parent device on the right to approve or decline the permission.</p>
+              <button class="link-line" style="margin-top:6px;" onclick="goToParentReview()">Open parent review screen directly →</button>
+            </div>
+            <div class="spacer"></div>
+          </div>
+
+          <!-- VIEW 9: Real-time Feedback Loop Screen -->
+          <div class="view" data-view="9">
+            <div class="stack" style="align-items:center; text-align:center; margin-top:30px;">
+              <div class="mascot kidm" id="feedbackMascot">🎉</div>
+              <h1 class="h1" id="feedbackTitle">Permission Approved!</h1>
+              <p id="feedbackText">Your parent updated your settings. Speaking lessons are now ready to play!</p>
+            </div>
+            <div class="spacer"></div>
+            <button class="btn-primary" onclick="changeKidView(8)">Enter Practice Arena →</button>
+          </div>
+
+          <!-- VIEW 8: Post-Decision Active Dashboard -->
+          <div class="view" data-view="8">
+            <div class="kid-stats-bar">
+              <div class="kid-stat-item">🎓 Aisha</div>
+              <div class="kid-stat-item" id="activeXpCounter">🔥 Streak: 3d · 🏆 45XP</div>
+            </div>
+
+            <div class="row between">
+              <span class="h2">My Lessons</span>
+              <span class="badge verified" id="homeBadge">✓ Voice Active</span>
+            </div>
+
+            <div class="card" style="margin-top:10px;">
+              <div class="h2" style="font-size:13.5px; margin-bottom:8px;">Lesson Permissions</div>
+              <div class="status-list">
+                <div class="status-row"><span>📖 Reading Lessons</span><span class="icon">✅</span></div>
+                <div class="status-row"><span>🎧 Listening Lessons</span><span class="icon">✅</span></div>
+                <div class="status-row"><span>🎙️ Speaking Practice</span><span class="icon" id="activeStatusSpeaking">✅</span></div>
+                <div class="status-row"><span>🏆 Leaderboards</span><span class="icon" id="activeStatusLeaderboards">🔒</span></div>
+              </div>
+            </div>
+
+            <div class="spacer"></div>
+
+            <!-- Voice interactive widget -->
+            <div class="card stack" id="speakingBoxParent" style="align-items:center; text-align:center;">
+              <div class="speaking-practice-box" id="practiceBox" style="width:100%;">
+                <div class="h2" style="font-size: 15px; color: var(--kid-primary);">Speak this word:</div>
+                <div class="h1" style="font-size: 28px; margin: 4px 0;">PARROT 🦜</div>
+                <canvas id="speakingWave"></canvas>
+                <div class="speech-text" id="practiceText">Tap mic to speak...</div>
+              </div>
+              
+              <div class="mic-btn-container" id="activeMicContainer">
+                <button class="mic-btn" id="activeMicBtn" onclick="runVoiceSim()">🎤</button>
+                <div class="mic-ring"></div>
+              </div>
+              <p style="font-size:11.5px; color: var(--kid-sub);" id="micActionHint">Try practicing your pronunciation!</p>
+            </div>
+
+            <div class="spacer"></div>
+            <button class="link-line" style="text-align:center; width:100%;" onclick="openParentSettingsFromKid()">🔧 Ask parent to review settings</button>
+          </div>
+
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEVICE 2: GUARDIAN DEVICE (PRIYA) -->
+    <div class="phone-wrap">
+      <div class="phone-label">Priya · Parent device</div>
+      <div class="phone">
+        <canvas class="confetti-overlay" id="parentConfetti"></canvas>
+        <div class="screen gd" id="screenParent">
+          
+          <div class="notch">
+            <div class="notch-camera"></div>
+            <div class="notch-speaker"></div>
+          </div>
+          
+          <!-- Mock System Status Bar -->
+          <div class="status-bar">
+            <div class="time-widget">9:41</div>
+            <div class="status-icons">
+              <span>📶</span>
+              <span>🛜</span>
+              <span>🔋 92%</span>
+            </div>
+          </div>
+
+          <!-- Parent Notification Toast -->
+          <div class="notification-toast" id="parentToast" onclick="clickParentToast()">
+            <div class="nt-header">
+              <span class="nt-header-title">🛡️ Family Safety Alert</span>
+              <span class="nt-time">now</span>
+            </div>
+            <div class="nt-body">
+              <strong>Aisha (12)</strong> requested Microphone permission for Speaking Lessons. Tap to review.
+            </div>
+          </div>
+
+          <!-- VIEW 5: Trigger Notification Review / Just-in-Time Intro -->
+          <div class="view active" data-view="5">
+            <div class="gd-header"><span class="dot"></span>Aisha (12) · Safety Hub</div>
+            <span class="eyebrow" id="highlight-context-eyebrow">Just-In-Time Request</span>
+            <div class="h1">Aisha wants to use Speaking Practice</div>
+            <p style="margin-top:8px;">Aisha has been studying for 3 days and reached a lesson needing voice evaluation to track correct sounds. We request access only now.</p>
+            
+            <div class="spacer"></div>
+            
+            <div class="card row between" style="background: rgba(47,93,80,0.03);">
+              <span style="font-size: 26px; line-height: 1;">🎙️</span>
+              <p style="font-size:12px; margin:0; line-height: 1.4;">Voice audio is recorded locally, processed only for feedback, and never shared for ads.</p>
+            </div>
+            
+            <div class="spacer"></div>
+            <button class="btn-primary" onclick="changeParentView(6)">Review permissions →</button>
+          </div>
+
+          <!-- VIEW 6: Granular Permission Consent Screen -->
+          <div class="view" data-view="6">
+            <div class="gd-header"><span class="dot"></span>Aisha (12) · Privacy Controls</div>
+            <span class="eyebrow">Select Allowed Data</span>
+            <div class="h1" style="font-size:19px;">Data permissions for Aisha</div>
+            
+            <div class="stack" style="margin-top:12px;" id="highlight-granular-cards">
+              <!-- Voice Toggle -->
+              <div class="card">
+                <div class="row between">
+                  <div>
+                    <div class="h2" style="font-size:14px;">Voice Recordings</div>
+                    <p style="font-size: 11.5px; margin:0;">Needed for interactive speaking lessons</p>
+                  </div>
+                  <div class="toggle on" id="tog-voice" onclick="toggleSwitch('tog-voice')"><div class="knob"></div></div>
+                </div>
+                <div class="benefit-line">✓ Enables interactive word correction with custom cartoon voices.</div>
+              </div>
+
+              <!-- Social Toggle -->
+              <div class="card">
+                <div class="row between">
+                  <div>
+                    <div class="h2" style="font-size:14px;">Social Leaderboards</div>
+                    <p style="font-size: 11.5px; margin:0;">Displays user profile on streak boards</p>
+                  </div>
+                  <div class="toggle" id="tog-social" onclick="toggleSwitch('tog-social')"><div class="knob"></div></div>
+                </div>
+                <div class="benefit-line">✓ Friendly competitive rankings with friends.</div>
+              </div>
+
+              <!-- Ads Toggle -->
+              <div class="card">
+                <div class="row between">
+                  <div>
+                    <div class="h2" style="font-size:14px;">Targeted Advertising</div>
+                    <p style="font-size: 11.5px; margin:0;">Off by default for minors under COPPA</p>
+                  </div>
+                  <div class="toggle" id="tog-ads" onclick="toggleSwitch('tog-ads')"><div class="knob"></div></div>
+                </div>
+                <div class="benefit-line" style="color: #9A6B2E;">ℹ No classroom value. Turning on displays personalized items.</div>
+              </div>
+
+              <!-- Analytics Toggle -->
+              <div class="card">
+                <div class="row between">
+                  <div>
+                    <div class="h2" style="font-size:14px;">Crash Analytics</div>
+                    <p style="font-size: 11.5px; margin:0;">Shares error reports with developers</p>
+                  </div>
+                  <div class="toggle" id="tog-analytics" onclick="toggleSwitch('tog-analytics')"><div class="knob"></div></div>
+                </div>
+                <div class="benefit-line">✓ Helps identify software crashes to fix issues.</div>
+              </div>
+            </div>
+
+            <div class="spacer"></div>
+            <button class="btn-primary" onclick="submitConsentChoices(true)">Accept Selected Choices →</button>
+            <button class="btn-decline" style="margin-top:8px;" onclick="submitConsentChoices(false)">Decline All Requested Controls</button>
+          </div>
+
+          <!-- VIEW 7: Consent Accepted Confirmation -->
+          <div class="view" data-view="7">
+            <div class="gd-header"><span class="dot"></span>Request Approved</div>
+            <div class="stack" style="align-items:center; text-align:center; margin-top:30px;">
+              <div class="mascot gdm float-slow" style="font-size: 26px; color: var(--gd-primary); font-weight:700;">✓</div>
+              <h1 class="h1">Permissions Saved</h1>
+              <p>Aisha's app has been updated. You'll receive a friendly privacy report every 3 months. You can adjust this anytime.</p>
+            </div>
+            <div class="spacer"></div>
+            <button class="btn-primary" onclick="simulateKidAppSync('approved')">Sync &amp; Return to Aisha's Screen</button>
+            <button class="link-line" style="margin-top:10px;" onclick="changeParentView(10)">Manage All Permissions Hub →</button>
+          </div>
+
+          <!-- VIEW 11: Consent Declined Confirmation -->
+          <div class="view" data-view="11">
+            <div class="gd-header"><span class="dot"></span>Request Declined</div>
+            <div class="stack" style="align-items:center; text-align:center; margin-top:30px;">
+              <div class="mascot gdm float-slow">🛡️</div>
+              <h1 class="h1">Decisions Saved</h1>
+              <p>Speaking practice stays locked in safe mode. Aisha can still practice lessons by writing or listening without issue.</p>
+            </div>
+            <div class="spacer"></div>
+            <button class="btn-primary" onclick="simulateKidAppSync('declined')">Sync &amp; Return to Aisha's Screen</button>
+          </div>
+
+          <!-- VIEW 10: Parent Dashboard (Ongoing Management Panel) -->
+          <div class="view" data-view="10">
+            <div class="gd-header"><span class="dot"></span>Aisha (12) · Dashboard</div>
+            <span class="eyebrow" id="highlight-dashboard-title">Family Permissions Hub</span>
+            <div class="h1" style="font-size:18px;">Manage child controls</div>
+            <p style="margin-top:4px;">Changes save immediately and sync over the cloud to Aisha's device.</p>
+            
+            <div class="stack" style="margin-top:14px;">
+              <div class="card row between">
+                <div class="h2" style="font-size:14px;">🎙️ Microphone Audio</div>
+                <div class="toggle" id="dash-voice" onclick="toggleSwitch('dash-voice')"><div class="knob"></div></div>
+              </div>
+              <div class="card row between">
+                <div class="h2" style="font-size:14px;">🏆 Public Leaderboard</div>
+                <div class="toggle" id="dash-social" onclick="toggleSwitch('dash-social')"><div class="knob"></div></div>
+              </div>
+              <div class="card row between">
+                <div class="h2" style="font-size:14px;">🛍️ Personalized Advertising</div>
+                <div class="toggle" id="dash-ads" onclick="toggleSwitch('dash-ads')"><div class="knob"></div></div>
+              </div>
+              <div class="card row between">
+                <div class="h2" style="font-size:14px;">📈 Analytics Data</div>
+                <div class="toggle" id="dash-analytics" onclick="toggleSwitch('dash-analytics')"><div class="knob"></div></div>
+              </div>
+            </div>
+
+            <div class="spacer"></div>
+            <button class="btn-primary" onclick="saveParentDashboardChanges()">Apply Immediate Updates</button>
+            <div class="caption" id="saveConfirmMessage" style="margin-top:8px; color:#2A7A4E; font-weight:700; opacity:0; transition:opacity 0.25s;">
+              ✓ Saved &amp; Updated Aisha's App Live!
+            </div>
+          </div>
+
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Dynamic State Manager
+  let userConsent = {
+    voice: true,
+    social: false,
+    ads: false,
+    analytics: false
+  };
+
+  let hasNotifiedParent = false;
+  let isRecording = false;
+  let currentXp = 45;
+
+  // Sound Synthesizer via Web Audio API
+  class SoundFX {
+    constructor() {
+      this.ctx = null;
+    }
+    init() {
+      if (!this.ctx) {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    }
+    playPop() {
+      this.init();
+      let osc = this.ctx.createOscillator();
+      let gain = this.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      
+      osc.frequency.setValueAtTime(450, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1000, this.ctx.currentTime + 0.08);
+      
+      gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+      
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.08);
+    }
+    playChime() {
+      this.init();
+      let now = this.ctx.currentTime;
+      let playNote = (freq, start, duration, vol) => {
+        let osc = this.ctx.createOscillator();
+        let gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, start);
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(vol, start + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+        osc.start(start);
+        osc.stop(start + duration);
+      };
+      playNote(784, now, 0.25, 0.15); // G5
+      playNote(1047, now + 0.10, 0.35, 0.15); // C6
+    }
+    playBuzzer() {
+      this.init();
+      let now = this.ctx.currentTime;
+      let osc = this.ctx.createOscillator();
+      let gain = this.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.linearRampToValueAtTime(140, now + 0.2);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 0.2);
+      osc.start();
+      osc.stop(now + 0.2);
+    }
+    playTada() {
+      this.init();
+      let now = this.ctx.currentTime;
+      let chord = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      chord.forEach((freq, idx) => {
+        let osc = this.ctx.createOscillator();
+        let gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        gain.gain.setValueAtTime(0, now + idx * 0.08);
+        gain.gain.linearRampToValueAtTime(0.1, now + idx * 0.08 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
+        osc.start(now + idx * 0.08);
+        osc.stop(now + idx * 0.08 + 0.4);
+      });
+    }
+  }
+  const sounds = new SoundFX();
+
+  // Particle Confetti Engine
+  class Confetti {
+    constructor(canvasId) {
+      this.canvas = document.getElementById(canvasId);
+      this.ctx = this.canvas.getContext('2d');
+      this.particles = [];
+      this.animationFrame = null;
+      this.colors = ['#FF6B4A', '#FFC93C', '#3FBF7F', '#58A6FF', '#FF85FF'];
+      this.resize();
+    }
+    resize() {
+      this.canvas.width = this.canvas.parentElement.clientWidth;
+      this.canvas.height = this.canvas.parentElement.clientHeight;
+    }
+    burst(x, y) {
+      this.resize();
+      this.particles = [];
+      cancelAnimationFrame(this.animationFrame);
+      for(let i=0; i<65; i++) {
+        this.particles.push({
+          x: x || this.canvas.width / 2,
+          y: y || this.canvas.height / 2,
+          vx: (Math.random() - 0.5) * 8,
+          vy: (Math.random() - 0.8) * 12,
+          size: Math.random() * 6 + 4,
+          color: this.colors[Math.floor(Math.random() * this.colors.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10,
+          alpha: 1
+        });
+      }
+      this.loop();
+    }
+    loop() {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      let alive = false;
+      this.particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35; // gravity
+        p.vx *= 0.98;
+        p.rotation += p.rotationSpeed;
+        p.alpha -= 0.015;
+        
+        if (p.alpha > 0) {
+          alive = true;
+          this.ctx.save();
+          this.ctx.globalAlpha = p.alpha;
+          this.ctx.translate(p.x, p.y);
+          this.ctx.rotate(p.rotation * Math.PI / 180);
+          this.ctx.fillStyle = p.color;
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          this.ctx.restore();
+        }
+      });
+      if (alive) {
+        this.animationFrame = requestAnimationFrame(() => this.loop());
+      }
+    }
+  }
+
+  const kidConfetti = new Confetti('kidConfetti');
+  const parentConfetti = new Confetti('parentConfetti');
+
+  // Status Bar Clock Ticker
+  function startClocks() {
+    function tick() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      const formatted = hours + ':' + minutes;
+      document.querySelectorAll('.time-widget').forEach(el => {
+        el.textContent = formatted;
+      });
+    }
+    tick();
+    setInterval(tick, 30000);
+  }
+  startClocks();
+
+  // System navigation triggers
+  function changeKidView(n) {
+    sounds.playPop();
+    document.querySelectorAll('#screenKid .view').forEach(v => v.classList.remove('active'));
+    document.querySelector(`#screenKid .view[data-view="${n}"]`).classList.add('active');
+  }
+
+  // Set initial labels state
+  setTimeout(() => {
+    document.getElementById('statusSpeaking').textContent = '🔒';
+    document.getElementById('statusLeaderboards').textContent = '🔒';
+    document.getElementById('activeStatusSpeaking').textContent = '🔒';
+    document.getElementById('activeStatusLeaderboards').textContent = '🔒';
+  }, 50);
+
+  function changeParentView(n) {
+    sounds.playPop();
+    document.querySelectorAll('#screenParent .view').forEach(v => v.classList.remove('active'));
+    document.querySelector(`#screenParent .view[data-view="${n}"]`).classList.add('active');
+    if (n === 10) {
+      syncDashboardToggles();
+    }
+  }
+
+  // Kid interaction triggers
+  function triggerPermissionAsk() {
+    sounds.playPop();
+    changeKidView(3);
+  }
+
+  function sendParentNotification() {
+    sounds.playPop();
+    changeKidView(4);
+    hasNotifiedParent = true;
+    
+    // Simulate cloud notification latency to parent
+    setTimeout(() => {
+      sounds.playChime();
+      document.getElementById('parentToast').classList.add('visible');
+    }, 1200);
+  }
+
+  function goToParentReview() {
+    changeParentView(5);
+    document.getElementById('parentToast').classList.remove('visible');
+  }
+
+  function clickParentToast() {
+    sounds.playPop();
+    document.getElementById('parentToast').classList.remove('visible');
+    changeParentView(5);
+  }
+
+  // Toggle utility
+  function toggleSwitch(id) {
+    sounds.playPop();
+    document.getElementById(id).classList.toggle('on');
+  }
+
+  // Parent decisions
+  function submitConsentChoices(approved) {
+    if (approved) {
+      userConsent.voice = document.getElementById('tog-voice').classList.contains('on');
+      userConsent.social = document.getElementById('tog-social').classList.contains('on');
+      userConsent.ads = document.getElementById('tog-ads').classList.contains('on');
+      userConsent.analytics = document.getElementById('tog-analytics').classList.contains('on');
+      sounds.playTada();
+      parentConfetti.burst();
+      changeParentView(7);
+    } else {
+      userConsent.voice = false;
+      userConsent.social = false;
+      userConsent.ads = false;
+      userConsent.analytics = false;
+      sounds.playBuzzer();
+      changeParentView(11);
+    }
+  }
+
+  // Real-time synchronization
+  function simulateKidAppSync(decision) {
+    sounds.playPop();
+    
+    // Configure feedback screen values
+    const mascot = document.getElementById('feedbackMascot');
+    const title = document.getElementById('feedbackTitle');
+    const desc = document.getElementById('feedbackText');
+    const kidToast = document.getElementById('kidToast');
+    const kidToastText = document.getElementById('kidToastText');
+
+    if (decision === 'approved' && userConsent.voice) {
+      mascot.textContent = '🎉';
+      title.textContent = 'Permission Approved!';
+      desc.textContent = 'Your parent approved Speaking Practice. You can now use voice exercises.';
+      kidToastText.textContent = 'Speaking Lessons Unlocked! 🎉';
+      
+      // Update status badges
+      document.getElementById('statusSpeaking').textContent = '✅';
+      document.getElementById('activeStatusSpeaking').textContent = '✅';
+      document.getElementById('homeBadge').textContent = '✓ Voice Active';
+      document.getElementById('homeBadge').className = 'badge verified';
+    } else {
+      mascot.textContent = '📚';
+      title.textContent = 'All Good!';
+      desc.textContent = 'Your parent said not yet. Speaking Lessons will stay locked for now, but reading & listening are still active.';
+      kidToastText.textContent = 'Mic permissions declined.';
+      
+      document.getElementById('statusSpeaking').textContent = '🔒';
+      document.getElementById('activeStatusSpeaking').textContent = '🔒';
+      document.getElementById('homeBadge').textContent = '🔒 Safe Mode';
+      document.getElementById('homeBadge').className = 'badge locked';
+    }
+
+    // Sync Social leaderboards
+    const checkIcon = userConsent.social ? '✅' : '🔒';
+    document.getElementById('statusLeaderboards').textContent = checkIcon;
+    document.getElementById('activeStatusLeaderboards').textContent = checkIcon;
+
+    changeKidView(9);
+    
+    // Slide down toast on kid screen after a brief delay
+    setTimeout(() => {
+      if (decision === 'approved' && userConsent.voice) {
+        sounds.playChime();
+        kidConfetti.burst();
+      } else {
+        sounds.playBuzzer();
+      }
+      kidToast.classList.add('visible');
+    }, 800);
+  }
+
+  function dismissKidToast() {
+    sounds.playPop();
+    document.getElementById('kidToast').classList.remove('visible');
+  }
+
+  // Ongoing dashboard management
+  function syncDashboardToggles() {
+    setToggleState('dash-voice', userConsent.voice);
+    setToggleState('dash-social', userConsent.social);
+    setToggleState('dash-ads', userConsent.ads);
+    setToggleState('dash-analytics', userConsent.analytics);
+    document.getElementById('saveConfirmMessage').style.opacity = 0;
+  }
+
+  function setToggleState(id, active) {
+    const el = document.getElementById(id);
+    if (active) {
+      el.classList.add('on');
+    } else {
+      el.classList.remove('on');
+    }
+  }
+
+  function saveParentDashboardChanges() {
+    userConsent.voice = document.getElementById('dash-voice').classList.contains('on');
+    userConsent.social = document.getElementById('dash-social').classList.contains('on');
+    userConsent.ads = document.getElementById('dash-ads').classList.contains('on');
+    userConsent.analytics = document.getElementById('dash-analytics').classList.contains('on');
+    
+    // Live update kid views
+    const checkVoice = userConsent.voice ? '✅' : '🔒';
+    const checkSocial = userConsent.social ? '✅' : '🔒';
+    
+    document.getElementById('statusSpeaking').textContent = checkVoice;
+    document.getElementById('activeStatusSpeaking').textContent = checkVoice;
+    document.getElementById('statusLeaderboards').textContent = checkSocial;
+    document.getElementById('activeStatusLeaderboards').textContent = checkSocial;
+
+    const badge = document.getElementById('homeBadge');
+    if (userConsent.voice) {
+      badge.textContent = '✓ Voice Active';
+      badge.className = 'badge verified';
+    } else {
+      badge.textContent = '🔒 Safe Mode';
+      badge.className = 'badge locked';
+    }
+
+    sounds.playTada();
+    parentConfetti.burst();
+    
+    const confirmMsg = document.getElementById('saveConfirmMessage');
+    confirmMsg.style.opacity = 1;
+    setTimeout(() => {
+      confirmMsg.style.opacity = 0;
+    }, 2000);
+  }
+
+  function openParentSettingsFromKid() {
+    changeParentView(10);
+  }
+
+  // Interactive Voice Speaking Exercise Simulation
+  function runVoiceSim() {
+    if (isRecording) return;
+    
+    // Verify voice permission is still approved
+    if (!userConsent.voice) {
+      sounds.playBuzzer();
+      alert("Microphone permission is currently disabled. Ask your parent to toggle it on.");
+      return;
+    }
+
+    sounds.playPop();
+    isRecording = true;
+    
+    const micBtn = document.getElementById('activeMicBtn');
+    const micAction = document.getElementById('micActionHint');
+    const textHint = document.getElementById('practiceText');
+    const waveCanvas = document.getElementById('speakingWave');
+    const ctx = waveCanvas.getContext('2d');
+    
+    // Setup wave layout
+    document.getElementById('practiceBox').style.display = 'flex';
+    document.getElementById('activeMicContainer').style.display = 'none';
+    
+    micBtn.classList.add('listening');
+    textHint.textContent = "Listening... Speak now!";
+    textHint.style.color = 'var(--kid-primary)';
+    
+    let waveTime = 0;
+    let waveAnimation = null;
+    
+    function drawWave() {
+      ctx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+      ctx.strokeStyle = '#3FBF7F';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      
+      for (let x = 0; x < waveCanvas.width; x++) {
+        // Multi-frequency sine formula for realistic sound signature
+        const frequencyMultiplier = 0.05;
+        const speed = 0.15;
+        const amplitude = 12 * Math.sin(waveTime * 0.05); 
+        const y = waveCanvas.height / 2 + 
+                  amplitude * Math.sin(x * frequencyMultiplier + waveTime) +
+                  (amplitude * 0.4) * Math.cos(x * 0.12 - waveTime * 1.5);
+                  
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      
+      waveTime += 0.8;
+      waveAnimation = requestAnimationFrame(drawWave);
+    }
+    
+    drawWave();
+    
+    // Transition speech-to-text words
+    setTimeout(() => { textHint.textContent = "Aisha: \"Pa... rrot...\" 🗣️"; }, 1000);
+    setTimeout(() => { textHint.textContent = "Processing pronunciation..."; }, 2000);
+    
+    setTimeout(() => {
+      cancelAnimationFrame(waveAnimation);
+      isRecording = false;
+      
+      sounds.playTada();
+      kidConfetti.burst();
+      
+      textHint.textContent = "Perfect! 98% Match ✨";
+      textHint.style.color = 'var(--kid-secondary)';
+      
+      // Update XP Streak live!
+      currentXp += 15;
+      document.getElementById('xpCounter').textContent = `🔥 Streak: 3d · 🏆 ${currentXp}XP`;
+      document.getElementById('activeXpCounter').textContent = `🔥 Streak: 3d · 🏆 ${currentXp}XP`;
+      
+      // Return mic button
+      setTimeout(() => {
+        document.getElementById('practiceBox').style.display = 'none';
+        document.getElementById('activeMicContainer').style.display = 'block';
+        micBtn.classList.remove('listening');
+        textHint.textContent = "Tap mic to speak...";
+        textHint.style.color = 'var(--kid-text)';
+      }, 2000);
+      
+    }, 3200);
+  }
+
+  // Educational Explainer Highlighter
+  function triggerHighlight(feature) {
+    sounds.playPop();
+    
+    // Clear active highlights
+    document.querySelectorAll('.edu-feature-card').forEach(c => c.classList.remove('active-highlight'));
+    document.getElementById('highlight-trigger-btn').classList.remove('highlight-pulse-kid');
+    document.getElementById('highlight-granular-cards').classList.remove('highlight-pulse-gd');
+    document.getElementById('highlight-context-eyebrow').classList.remove('highlight-pulse-gd');
+    document.getElementById('highlight-dashboard-title').classList.remove('highlight-pulse-gd');
+
+    document.getElementById(`card-${feature}`).classList.add('active-highlight');
+
+    if (feature === 'progressive') {
+      changeKidView(2);
+      setTimeout(() => {
+        document.getElementById('highlight-trigger-btn').classList.add('highlight-pulse-kid');
+      }, 300);
+    } else if (feature === 'contextual') {
+      changeParentView(5);
+      setTimeout(() => {
+        document.getElementById('highlight-context-eyebrow').classList.add('highlight-pulse-gd');
+      }, 300);
+    } else if (feature === 'granular') {
+      // Direct parent to check toggles on view 6 or view 10
+      if (document.querySelector('#screenParent .view[data-view="10"]').classList.contains('active')) {
+        document.getElementById('highlight-dashboard-title').classList.add('highlight-pulse-gd');
+      } else {
+        changeParentView(6);
+        setTimeout(() => {
+          document.getElementById('highlight-granular-cards').classList.add('highlight-pulse-gd');
+        }, 300);
+      }
+    }
+  }
+
+  // Full prototype reset
+  function resetDemo() {
+    sounds.playPop();
+    userConsent = {
+      voice: true,
+      social: false,
+      ads: false,
+      analytics: false
+    };
+    hasNotifiedParent = false;
+    isRecording = false;
+    currentXp = 45;
+    
+    // Clear animations & highlights
+    document.querySelectorAll('.edu-feature-card').forEach(c => c.classList.remove('active-highlight'));
+    document.getElementById('highlight-trigger-btn').classList.remove('highlight-pulse-kid');
+    document.getElementById('highlight-granular-cards').classList.remove('highlight-pulse-gd');
+    
+    // Sync initial labels
+    document.getElementById('statusSpeaking').textContent = '🔒';
+    document.getElementById('statusLeaderboards').textContent = '🔒';
+    document.getElementById('activeStatusSpeaking').textContent = '🔒';
+    document.getElementById('activeStatusLeaderboards').textContent = '🔒';
+    
+    document.getElementById('xpCounter').textContent = `🔥 Streak: 3d · 🏆 45XP`;
+    document.getElementById('activeXpCounter').textContent = `🔥 Streak: 3d · 🏆 45XP`;
+    
+    // Hide toasts
+    document.getElementById('kidToast').classList.remove('visible');
+    document.getElementById('parentToast').classList.remove('visible');
+
+    // Reset views
+    changeKidView(1);
+    changeParentView(5);
+  }
+</script>
+
+</body>
+</html>
