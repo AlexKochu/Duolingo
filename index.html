@@ -176,38 +176,83 @@
   }
 
   .phone-label {
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: .15em;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: .18em;
     text-transform: uppercase;
-    color: #9CA3AF;
-    background: rgba(255,255,255,0.06);
-    padding: 6px 16px;
+    color: #6B7280;
+    background: rgba(255,255,255,0.04);
+    padding: 5px 14px 5px 12px;
     border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .phone-label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ADE80;
+    box-shadow: 0 0 6px #4ADE80;
+    flex-shrink: 0;
   }
 
   /* High fidelity hardware frame */
   .phone {
     width: 350px;
     height: 750px;
-    background: var(--phone-bg);
-    border-radius: 48px;
-    padding: 12px;
-    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8),
-                0 0 0 4px var(--phone-border),
-                inset 0 0 8px rgba(255, 255, 255, 0.1);
+    background: linear-gradient(160deg, #1C1F2E 0%, #0D0F18 100%);
+    border-radius: 50px;
+    padding: 11px;
+    box-shadow:
+      0 40px 80px -20px rgba(0,0,0,0.9),
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 0 0 3px #22263A,
+      0 0 0 4px rgba(255,255,255,0.04),
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      inset 0 -1px 0 rgba(0,0,0,0.4);
     position: relative;
     user-select: none;
   }
+
+  /* Physical side buttons */
+  .phone::before {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 120px;
+    width: 4px;
+    height: 62px;
+    background: linear-gradient(180deg, #2A2D3E 0%, #1A1C28 100%);
+    border-radius: 0 3px 3px 0;
+    box-shadow: inset -1px 0 0 rgba(255,255,255,0.06);
+  }
+
+  .phone-vol-btn {
+    position: absolute;
+    left: -4px;
+    width: 4px;
+    background: linear-gradient(180deg, #2A2D3E 0%, #1A1C28 100%);
+    border-radius: 3px 0 0 3px;
+    box-shadow: inset 1px 0 0 rgba(255,255,255,0.06);
+  }
+  .phone-vol-btn.v1 { top: 100px; height: 38px; }
+  .phone-vol-btn.v2 { top: 148px; height: 38px; }
+  .phone-vol-btn.v3 { top: 196px; height: 52px; }
 
   /* Screen glare overlay */
   .phone::after {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    border-radius: 48px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.15) 100%);
+    border-radius: 50px;
+    background: linear-gradient(145deg,
+      rgba(255,255,255,0.07) 0%,
+      rgba(255,255,255,0.02) 30%,
+      rgba(0,0,0,0) 50%,
+      rgba(0,0,0,0.1) 100%);
     pointer-events: none;
     z-index: 100;
   }
@@ -215,60 +260,76 @@
   .screen {
     width: 100%;
     height: 100%;
-    border-radius: 36px;
+    border-radius: 40px;
     overflow: hidden;
     position: relative;
     background: var(--kid-bg);
     transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
   }
 
   .screen.mode-guardian {
     background: var(--gd-bg);
   }
 
-  /* Hardware Notch */
+  /* Dynamic Island */
   .notch {
     position: absolute;
-    top: 10px;
+    top: 12px;
     left: 50%;
     transform: translateX(-50%);
-    width: 100px;
-    height: 25px;
+    width: 110px;
+    height: 30px;
     background: #000;
-    border-radius: 14px;
+    border-radius: 20px;
     z-index: 99;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.04);
   }
 
   .notch-camera {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: #111e3b;
-    margin-right: 12px;
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.2);
+    background: radial-gradient(circle at 35% 35%, #1a2a4a, #000);
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.08), 0 0 4px rgba(80,120,255,0.3);
+    flex-shrink: 0;
+  }
+
+  .notch-camera::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    top: 1px;
+    left: 1px;
   }
 
   .notch-speaker {
-    width: 40px;
-    height: 3px;
+    width: 44px;
+    height: 3.5px;
     border-radius: 2px;
-    background: #222;
+    background: linear-gradient(90deg, #1a1a1a, #333, #1a1a1a);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
   }
 
   /* Status Bar */
   .status-bar {
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 44px;
-    padding: 10px 24px 0;
+    height: 50px;
+    padding: 14px 20px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 11.5px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     z-index: 90;
     pointer-events: none;
   }
@@ -278,7 +339,17 @@
   .status-icons {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
+  }
+
+  .status-icons svg {
+    display: block;
+  }
+
+  .battery-text {
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 1px;
   }
 
   /* Bottom Home Indicator */
@@ -634,18 +705,24 @@
   
   /* Mascot */
   .mascot {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    border-radius: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
     flex-shrink: 0;
-    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.06);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -3px 0 rgba(0,0,0,0.08);
   }
-  .mascot.kidm { background: var(--kid-accent); }
-  .mascot.gdm { background: #DCE7E2; }
+  .mascot.kidm {
+    background: linear-gradient(145deg, #FFDA6B, #FFC93C);
+  }
+  .mascot.gdm {
+    background: linear-gradient(145deg, #E8F2EE, #D4E8DF);
+  }
+  .mascot svg {
+    display: block;
+  }
 
   /* Premium Toggle Switches */
   .toggle {
@@ -715,60 +792,73 @@
   /* Microphone Button */
   .mic-btn-container {
     position: relative;
-    width: 76px;
-    height: 76px;
+    width: 80px;
+    height: 80px;
     margin: 0 auto;
   }
 
   .mic-btn {
-    width: 76px;
-    height: 76px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    background: var(--kid-secondary);
+    background: linear-gradient(145deg, #4DD68A, #3FBF7F);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
     cursor: pointer;
-    box-shadow: 0 6px 0 #2c9962, 0 10px 20px rgba(63, 191, 127, 0.2);
+    box-shadow: 0 6px 0 #2a9060, 0 12px 28px rgba(63, 191, 127, 0.28), inset 0 1px 0 rgba(255,255,255,0.3);
     border: none;
-    transition: transform 0.1s, box-shadow 0.1s;
+    transition: transform 0.12s cubic-bezier(0.4,0,0.2,1), box-shadow 0.12s, filter 0.2s;
     outline: none;
   }
   .mic-btn:hover {
-    filter: brightness(1.05);
+    filter: brightness(1.06);
+    box-shadow: 0 6px 0 #2a9060, 0 16px 36px rgba(63, 191, 127, 0.38), inset 0 1px 0 rgba(255,255,255,0.3);
   }
   .mic-btn:active {
-    transform: translateY(4px);
-    box-shadow: 0 2px 0 #2c9962;
+    transform: translateY(5px);
+    box-shadow: 0 1px 0 #2a9060, 0 4px 12px rgba(63, 191, 127, 0.2), inset 0 1px 0 rgba(255,255,255,0.3);
   }
   .mic-btn.disabled {
-    background: #D9D5C8;
-    box-shadow: 0 6px 0 #b9b6ab;
+    background: linear-gradient(145deg, #E8E4DC, #D9D5C8);
+    box-shadow: 0 6px 0 #b9b6ab, inset 0 1px 0 rgba(255,255,255,0.4);
     cursor: not-allowed;
   }
   .mic-btn.disabled:active {
     transform: none;
-    box-shadow: 0 6px 0 #b9b6ab;
+    box-shadow: 0 6px 0 #b9b6ab, inset 0 1px 0 rgba(255,255,255,0.4);
   }
+  .mic-btn svg { display: block; }
 
   .mic-ring {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
     border-radius: 50%;
-    border: 3px solid var(--kid-secondary);
+    border: 2.5px solid var(--kid-secondary);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .mic-ring-2 {
+    position: absolute;
+    top: -10px; left: -10px;
+    width: calc(100% + 20px); height: calc(100% + 20px);
+    border-radius: 50%;
+    border: 1.5px solid rgba(63, 191, 127, 0.3);
     opacity: 0;
     pointer-events: none;
   }
   
   .mic-btn.listening + .mic-ring {
-    animation: rippleMic 1.5s infinite;
+    animation: rippleMic 1.4s infinite;
+  }
+  .mic-btn.listening ~ .mic-ring-2 {
+    animation: rippleMic 1.4s 0.4s infinite;
   }
   
   @keyframes rippleMic {
-    0% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(1.6); opacity: 0; }
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(1.7); opacity: 0; }
   }
 
   .caption {
@@ -906,8 +996,11 @@
 
     <!-- DEVICE 1: CHILD DEVICE (AISHA) -->
     <div class="phone-wrap">
-      <div class="phone-label">Aisha · child account (12)</div>
+      <div class="phone-label">Aisha · Child Account (12)</div>
       <div class="phone">
+        <div class="phone-vol-btn v1"></div>
+        <div class="phone-vol-btn v2"></div>
+        <div class="phone-vol-btn v3"></div>
         <canvas class="confetti-overlay" id="kidConfetti"></canvas>
         <div class="screen kid" id="screenKid">
           
@@ -920,16 +1013,38 @@
           <div class="status-bar">
             <div class="time-widget">9:41</div>
             <div class="status-icons">
-              <span>📶</span>
-              <span>🛜</span>
-              <span>🔋 85%</span>
+              <!-- Signal Bars SVG -->
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor" opacity="1"/>
+                <rect x="4.5" y="5" width="3" height="7" rx="1" fill="currentColor" opacity="1"/>
+                <rect x="9" y="2.5" width="3" height="9.5" rx="1" fill="currentColor" opacity="1"/>
+                <rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="currentColor" opacity="0.3"/>
+              </svg>
+              <!-- WiFi SVG -->
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" fill="currentColor"/>
+                <path d="M4.2 7.3a5.3 5.3 0 0 1 7.6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                <path d="M1.5 4.6a9 9 0 0 1 13 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.5"/>
+              </svg>
+              <!-- Battery SVG -->
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+                <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/>
+                <path d="M23 4v4a2 2 0 0 0 0-4z" fill="currentColor" opacity="0.5"/>
+              </svg>
+              <span class="battery-text">85</span>
             </div>
           </div>
 
           <!-- Kid Notification Toast -->
           <div class="notification-toast" id="kidToast" onclick="dismissKidToast()">
             <div class="nt-header">
-              <span class="nt-header-title">💬 Parent Notification</span>
+              <span class="nt-header-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex-shrink:0">
+                  <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="#2F5D50"/>
+                </svg>
+                Parent Notification
+              </span>
               <span class="nt-time">now</span>
             </div>
             <div class="nt-body" id="kidToastText">
@@ -940,14 +1055,30 @@
           <!-- VIEW 1: Signup / Onboarding -->
           <div class="view active" data-view="1">
             <div class="stack" style="align-items:center; text-align:center; margin-top:20px;">
-              <div class="mascot kidm float-slow">🦜</div>
+              <div class="mascot kidm float-slow">
+                <!-- Parrot/Book icon -->
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 3C8.5 3 6 5.5 6 9c0 2.4 1.3 4.5 3.2 5.6L8 20h8l-1.2-5.4C16.7 13.5 18 11.4 18 9c0-3.5-2.5-6-6-6z" fill="#2B2B2B" opacity="0.15"/>
+                  <path d="M17 8.5C17 11.5 14.8 14 12 14S7 11.5 7 8.5 9.2 4 12 4s5 2.2 5 4.5z" fill="#FF6B4A"/>
+                  <circle cx="10.5" cy="8" r="1" fill="white"/>
+                  <circle cx="13.5" cy="8" r="1" fill="white"/>
+                  <path d="M10.5 11c.4.6 1 1 1.5 1s1.1-.4 1.5-1" stroke="white" stroke-width="1" stroke-linecap="round" fill="none"/>
+                  <path d="M9 16l-.8 4h7.6l-.8-4" fill="#FFC93C"/>
+                </svg>
+              </div>
               <h1 class="h1">Let's start learning!</h1>
               <p>Setup is super fast! We just need your name and age to make your practice lessons perfect.</p>
             </div>
             <div class="spacer"></div>
             <div class="card stack">
-              <div class="h2">👤 Aisha</div>
-              <div class="h2">🎂 Birthday: 14 Mar 2014</div>
+              <div class="h2" style="display:flex;align-items:center;gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="#FF6B4A"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="#FF6B4A" opacity="0.3"/></svg>
+                Aisha
+              </div>
+              <div class="h2" style="display:flex;align-items:center;gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="3" stroke="#FF6B4A" stroke-width="2" fill="none"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#FF6B4A" stroke-width="2" stroke-linecap="round"/></svg>
+                Birthday: 14 Mar 2014
+              </div>
             </div>
             <div class="spacer"></div>
             <button class="btn-primary" onclick="changeKidView(2)">Start learning →</button>
@@ -956,22 +1087,57 @@
           <!-- VIEW 2: Dashboard (Locked Safe Mode) -->
           <div class="view" data-view="2">
             <div class="kid-stats-bar">
-              <div class="kid-stat-item">🎓 Aisha</div>
-              <div class="kid-stat-item" id="xpCounter">🔥 Streak: 3d · 🏆 45XP</div>
+              <div class="kid-stat-item" style="display:flex;align-items:center;gap:5px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 8l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#FF6B4A" stroke-width="2" stroke-linejoin="round" fill="none"/></svg>
+                Aisha
+              </div>
+              <div class="kid-stat-item" id="xpCounter" style="display:flex;align-items:center;gap:5px;">
+                <svg width="12" height="14" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#FF6B4A"/></svg>
+                Streak: 3d
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-left:4px"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 18l-6.2 3 1.2-6.8L2 9.3l6.9-1L12 2z" fill="#FFC93C"/></svg>
+                45XP
+              </div>
             </div>
             
             <div class="row between">
               <span class="h2">My Lessons</span>
-              <span class="badge locked" id="badgeSafeMode">🔒 Safe Mode</span>
+              <span class="badge locked" id="badgeSafeMode" style="display:flex;align-items:center;gap:4px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="11" rx="2" fill="#9A6B2E"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#9A6B2E" stroke-width="2" fill="none"/></svg>
+                Safe Mode
+              </span>
             </div>
             
             <div class="card" style="margin-top:10px;" id="highlight-safe-card">
               <div class="h2" style="font-size:13.5px; margin-bottom:8px;">Lesson Permissions</div>
               <div class="status-list">
-                <div class="status-row"><span>📖 Reading Lessons</span><span class="icon">✅</span></div>
-                <div class="status-row"><span>🎧 Listening Lessons</span><span class="icon">✅</span></div>
-                <div class="status-row"><span>🎙️ Speaking Practice</span><span class="icon" id="statusSpeaking">🔒</span></div>
-                <div class="status-row"><span>🏆 Leaderboards</span><span class="icon" id="statusLeaderboards">🔒</span></div>
+                <div class="status-row">
+                  <span style="display:flex;align-items:center;gap:6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M4 19h16M4 5h16M4 12h16" stroke="#7A7568" stroke-width="2" stroke-linecap="round"/></svg>
+                    Reading Lessons
+                  </span>
+                  <span class="icon" style="color:#3FBF7F;font-size:11px;font-weight:700;background:#E8F8F0;padding:2px 7px;border-radius:8px;">Active</span>
+                </div>
+                <div class="status-row">
+                  <span style="display:flex;align-items:center;gap:6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3 18v-6a9 9 0 0 1 18 0v6" stroke="#7A7568" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z" fill="#7A7568" opacity="0.5"/></svg>
+                    Listening Lessons
+                  </span>
+                  <span class="icon" style="color:#3FBF7F;font-size:11px;font-weight:700;background:#E8F8F0;padding:2px 7px;border-radius:8px;">Active</span>
+                </div>
+                <div class="status-row">
+                  <span style="display:flex;align-items:center;gap:6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" fill="#7A7568" opacity="0.5"/><path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#7A7568" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+                    Speaking Practice
+                  </span>
+                  <span class="icon" id="statusSpeaking" style="color:#9A6B2E;font-size:11px;font-weight:700;background:#FDF0DD;padding:2px 7px;border-radius:8px;">Locked</span>
+                </div>
+                <div class="status-row">
+                  <span style="display:flex;align-items:center;gap:6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 18l-6.2 3 1.2-6.8L2 9.3l6.9-1L12 2z" stroke="#7A7568" stroke-width="1.5" fill="none"/></svg>
+                    Leaderboards
+                  </span>
+                  <span class="icon" id="statusLeaderboards" style="color:#9A6B2E;font-size:11px;font-weight:700;background:#FDF0DD;padding:2px 7px;border-radius:8px;">Locked</span>
+                </div>
               </div>
             </div>
             
@@ -983,8 +1149,16 @@
               <p style="font-size:12.5px;">Read the sentence out loud to match our cartoon characters!</p>
               
               <div class="mic-btn-container" style="margin-top: 6px;">
-                <button class="mic-btn disabled" onclick="triggerPermissionAsk()">🎤</button>
+                <button class="mic-btn disabled" onclick="triggerPermissionAsk()">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" fill="rgba(0,0,0,0.3)"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="rgba(0,0,0,0.3)" stroke-width="2" stroke-linecap="round" fill="none"/>
+                    <line x1="12" y1="19" x2="12" y2="22" stroke="rgba(0,0,0,0.3)" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="9" y1="22" x2="15" y2="22" stroke="rgba(0,0,0,0.3)" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
                 <div class="mic-ring"></div>
+                <div class="mic-ring-2"></div>
               </div>
               <p style="font-size:11px; font-weight: 600; color: var(--kid-primary);">Tap Mic to unlock this lesson</p>
             </div>
@@ -996,14 +1170,20 @@
           <!-- VIEW 3: Contextual Explanation to Kid -->
           <div class="view" data-view="3">
             <div class="stack" style="align-items:center; text-align:center; margin-top:15px;">
-              <div class="mascot kidm float-slow">🔔</div>
+              <div class="mascot kidm float-slow">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="#FF6B4A"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#2B2B2B" stroke-width="2" stroke-linecap="round" fill="none"/>
+                </svg>
+              </div>
               <h1 class="h1">Ask your parent</h1>
               <p>To record voice clips for lessons, we need to ask your parent/guardian for microphone access.</p>
             </div>
             <div class="spacer"></div>
             <div class="card" style="background: rgba(255, 107, 74, 0.05); border: 1.5px dashed var(--kid-primary);">
-              <p style="font-weight:600; color: var(--kid-text); font-size:12.5px; text-align: center;">
-                ⚡ Free Play Mode
+              <p style="font-weight:600; color: var(--kid-text); font-size:12.5px; text-align: center; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#FF6B4A"/></svg>
+                Free Play Mode
               </p>
               <p style="font-size:11.5px; text-align: center; margin-top:4px;">
                 You can keep reading stories and practicing audio while we send them a message!
@@ -1016,7 +1196,12 @@
           <!-- VIEW 4: Request Sent state -->
           <div class="view" data-view="4">
             <div class="stack" style="align-items:center; text-align:center; margin-top:30px;">
-              <div class="mascot kidm float-slow">📤</div>
+              <div class="mascot kidm float-slow">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 2L11 13" stroke="#2B2B2B" stroke-width="2" stroke-linecap="round" fill="none"/>
+                  <path d="M22 2L15 22l-4-9-9-4 20-7z" fill="#FF6B4A"/>
+                </svg>
+              </div>
               <h1 class="h1">Request sent!</h1>
               <p>We've sent an instant review screen link to your parent's phone. Feel free to keep reading.</p>
             </div>
@@ -1032,7 +1217,12 @@
           <!-- VIEW 9: Real-time Feedback Loop Screen -->
           <div class="view" data-view="9">
             <div class="stack" style="align-items:center; text-align:center; margin-top:30px;">
-              <div class="mascot kidm" id="feedbackMascot">🎉</div>
+              <div class="mascot kidm" id="feedbackMascot">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" fill="#2B2B2B" opacity="0.1"/>
+                  <path d="M7 13l3 3 7-7" stroke="#2B2B2B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </div>
               <h1 class="h1" id="feedbackTitle">Permission Approved!</h1>
               <p id="feedbackText">Your parent updated your settings. Speaking lessons are now ready to play!</p>
             </div>
@@ -1043,22 +1233,57 @@
           <!-- VIEW 8: Post-Decision Active Dashboard -->
           <div class="view" data-view="8">
             <div class="kid-stats-bar">
-              <div class="kid-stat-item">🎓 Aisha</div>
-              <div class="kid-stat-item" id="activeXpCounter">🔥 Streak: 3d · 🏆 45XP</div>
+              <div class="kid-stat-item" style="display:flex;align-items:center;gap:5px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 8l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#FF6B4A" stroke-width="2" stroke-linejoin="round" fill="none"/></svg>
+                Aisha
+              </div>
+              <div class="kid-stat-item" id="activeXpCounter" style="display:flex;align-items:center;gap:5px;">
+                <svg width="12" height="14" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#FF6B4A"/></svg>
+                Streak: 3d
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-left:4px"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 18l-6.2 3 1.2-6.8L2 9.3l6.9-1L12 2z" fill="#FFC93C"/></svg>
+                45XP
+              </div>
             </div>
 
             <div class="row between">
               <span class="h2">My Lessons</span>
-              <span class="badge verified" id="homeBadge">✓ Voice Active</span>
+              <span class="badge verified" id="homeBadge" style="display:flex;align-items:center;gap:4px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#2A7A4E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Voice Active
+              </span>
             </div>
 
             <div class="card" style="margin-top:10px;">
               <div class="h2" style="font-size:13.5px; margin-bottom:8px;">Lesson Permissions</div>
               <div class="status-list">
-                <div class="status-row"><span>📖 Reading Lessons</span><span class="icon">✅</span></div>
-                <div class="status-row"><span>🎧 Listening Lessons</span><span class="icon">✅</span></div>
-                <div class="status-row"><span>🎙️ Speaking Practice</span><span class="icon" id="activeStatusSpeaking">✅</span></div>
-                <div class="status-row"><span>🏆 Leaderboards</span><span class="icon" id="activeStatusLeaderboards">🔒</span></div>
+                <div class="status-row">
+                  <span style="display:flex;align-items:center;gap:6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M4 19h16M4 5h16M4 12h16" stroke="#7A7568" stroke-width="2" stroke-linecap="round"/></svg>
+                    Reading Lessons
+                  </span>
+                  <span class="icon" style="color:#3FBF7F;font-size:11px;font-weight:700;background:#E8F8F0;padding:2px 7px;border-radius:8px;">Active</span>
+                </div>
+                <div class="status-row">
+                  <span style="display:flex;align-items:center;gap:6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3 18v-6a9 9 0 0 1 18 0v6" stroke="#7A7568" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z" fill="#7A7568" opacity="0.5"/></svg>
+                    Listening Lessons
+                  </span>
+                  <span class="icon" style="color:#3FBF7F;font-size:11px;font-weight:700;background:#E8F8F0;padding:2px 7px;border-radius:8px;">Active</span>
+                </div>
+                <div class="status-row">
+                  <span style="display:flex;align-items:center;gap:6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" fill="#7A7568" opacity="0.8"/><path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#7A7568" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+                    Speaking Practice
+                  </span>
+                  <span class="icon" id="activeStatusSpeaking" style="color:#3FBF7F;font-size:11px;font-weight:700;background:#E8F8F0;padding:2px 7px;border-radius:8px;">Active</span>
+                </div>
+                <div class="status-row">
+                  <span style="display:flex;align-items:center;gap:6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 18l-6.2 3 1.2-6.8L2 9.3l6.9-1L12 2z" stroke="#7A7568" stroke-width="1.5" fill="none"/></svg>
+                    Leaderboards
+                  </span>
+                  <span class="icon" id="activeStatusLeaderboards" style="color:#9A6B2E;font-size:11px;font-weight:700;background:#FDF0DD;padding:2px 7px;border-radius:8px;">Locked</span>
+                </div>
               </div>
             </div>
 
@@ -1068,20 +1293,31 @@
             <div class="card stack" id="speakingBoxParent" style="align-items:center; text-align:center;">
               <div class="speaking-practice-box" id="practiceBox" style="width:100%;">
                 <div class="h2" style="font-size: 15px; color: var(--kid-primary);">Speak this word:</div>
-                <div class="h1" style="font-size: 28px; margin: 4px 0;">PARROT 🦜</div>
+                <div class="h1" style="font-size: 28px; margin: 4px 0; letter-spacing:0.05em;">PARROT</div>
                 <canvas id="speakingWave"></canvas>
                 <div class="speech-text" id="practiceText">Tap mic to speak...</div>
               </div>
               
               <div class="mic-btn-container" id="activeMicContainer">
-                <button class="mic-btn" id="activeMicBtn" onclick="runVoiceSim()">🎤</button>
+                <button class="mic-btn" id="activeMicBtn" onclick="runVoiceSim()">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" fill="white"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+                    <line x1="12" y1="19" x2="12" y2="22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="9" y1="22" x2="15" y2="22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
                 <div class="mic-ring"></div>
+                <div class="mic-ring-2"></div>
               </div>
               <p style="font-size:11.5px; color: var(--kid-sub);" id="micActionHint">Try practicing your pronunciation!</p>
             </div>
 
             <div class="spacer"></div>
-            <button class="link-line" style="text-align:center; width:100%;" onclick="openParentSettingsFromKid()">🔧 Ask parent to review settings</button>
+            <button class="link-line" style="text-align:center; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="openParentSettingsFromKid()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" fill="#2F5D50"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="#2F5D50" stroke-width="1.5" fill="none"/></svg>
+              Ask parent to review settings
+            </button>
           </div>
 
           <div class="home-indicator"></div>
@@ -1091,8 +1327,11 @@
 
     <!-- DEVICE 2: GUARDIAN DEVICE (PRIYA) -->
     <div class="phone-wrap">
-      <div class="phone-label">Priya · Parent device</div>
+      <div class="phone-label">Priya · Parent Device</div>
       <div class="phone">
+        <div class="phone-vol-btn v1"></div>
+        <div class="phone-vol-btn v2"></div>
+        <div class="phone-vol-btn v3"></div>
         <canvas class="confetti-overlay" id="parentConfetti"></canvas>
         <div class="screen gd" id="screenParent">
           
@@ -1105,16 +1344,39 @@
           <div class="status-bar">
             <div class="time-widget">9:41</div>
             <div class="status-icons">
-              <span>📶</span>
-              <span>🛜</span>
-              <span>🔋 92%</span>
+              <!-- Signal Bars SVG -->
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor" opacity="1"/>
+                <rect x="4.5" y="5" width="3" height="7" rx="1" fill="currentColor" opacity="1"/>
+                <rect x="9" y="2.5" width="3" height="9.5" rx="1" fill="currentColor" opacity="1"/>
+                <rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="currentColor" opacity="1"/>
+              </svg>
+              <!-- WiFi SVG -->
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" fill="currentColor"/>
+                <path d="M4.2 7.3a5.3 5.3 0 0 1 7.6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                <path d="M1.5 4.6a9 9 0 0 1 13 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              </svg>
+              <!-- Battery SVG -->
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+                <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                <rect x="2" y="2" width="18" height="8" rx="2" fill="currentColor"/>
+                <path d="M23 4v4a2 2 0 0 0 0-4z" fill="currentColor" opacity="0.5"/>
+              </svg>
+              <span class="battery-text">92</span>
             </div>
           </div>
 
           <!-- Parent Notification Toast -->
           <div class="notification-toast" id="parentToast" onclick="clickParentToast()">
             <div class="nt-header">
-              <span class="nt-header-title">🛡️ Family Safety Alert</span>
+              <span class="nt-header-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex-shrink:0">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#2F5D50" opacity="0.2" stroke="#2F5D50" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9 12l2 2 4-4" stroke="#2F5D50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Family Safety Alert
+              </span>
               <span class="nt-time">now</span>
             </div>
             <div class="nt-body">
@@ -1131,8 +1393,15 @@
             
             <div class="spacer"></div>
             
-            <div class="card row between" style="background: rgba(47,93,80,0.03);">
-              <span style="font-size: 26px; line-height: 1;">🎙️</span>
+            <div class="card row between" style="background: rgba(47,93,80,0.03); gap:12px;">
+              <div style="width:40px;height:40px;border-radius:12px;background:rgba(47,93,80,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" fill="#2F5D50"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#2F5D50" stroke-width="2" stroke-linecap="round" fill="none"/>
+                  <line x1="12" y1="19" x2="12" y2="22" stroke="#2F5D50" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="9" y1="22" x2="15" y2="22" stroke="#2F5D50" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
               <p style="font-size:12px; margin:0; line-height: 1.4;">Voice audio is recorded locally, processed only for feedback, and never shared for ads.</p>
             </div>
             
@@ -1205,7 +1474,12 @@
           <div class="view" data-view="7">
             <div class="gd-header"><span class="dot"></span>Request Approved</div>
             <div class="stack" style="align-items:center; text-align:center; margin-top:30px;">
-              <div class="mascot gdm float-slow" style="font-size: 26px; color: var(--gd-primary); font-weight:700;">✓</div>
+              <div class="mascot gdm float-slow">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="#2F5D50" stroke-width="2" stroke-linecap="round" fill="none"/>
+                  <path d="M22 4L12 14.01l-3-3" stroke="#2F5D50" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
               <h1 class="h1">Permissions Saved</h1>
               <p>Aisha's app has been updated. You'll receive a friendly privacy report every 3 months. You can adjust this anytime.</p>
             </div>
@@ -1218,7 +1492,13 @@
           <div class="view" data-view="11">
             <div class="gd-header"><span class="dot"></span>Request Declined</div>
             <div class="stack" style="align-items:center; text-align:center; margin-top:30px;">
-              <div class="mascot gdm float-slow">🛡️</div>
+              <div class="mascot gdm float-slow">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#2F5D50" opacity="0.15" stroke="#2F5D50" stroke-width="2" stroke-linejoin="round"/>
+                  <line x1="9" y1="9" x2="15" y2="15" stroke="#2F5D50" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="15" y1="9" x2="9" y2="15" stroke="#2F5D50" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
               <h1 class="h1">Decisions Saved</h1>
               <p>Speaking practice stays locked in safe mode. Aisha can still practice lessons by writing or listening without issue.</p>
             </div>
@@ -1235,19 +1515,39 @@
             
             <div class="stack" style="margin-top:14px;">
               <div class="card row between">
-                <div class="h2" style="font-size:14px;">🎙️ Microphone Audio</div>
+                <div class="h2" style="font-size:14px; display:flex; align-items:center; gap:8px;">
+                  <div style="width:30px;height:30px;border-radius:8px;background:rgba(47,93,80,0.08);display:flex;align-items:center;justify-content:center;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" fill="#2F5D50"/><path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#2F5D50" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+                  </div>
+                  Microphone Audio
+                </div>
                 <div class="toggle" id="dash-voice" onclick="toggleSwitch('dash-voice')"><div class="knob"></div></div>
               </div>
               <div class="card row between">
-                <div class="h2" style="font-size:14px;">🏆 Public Leaderboard</div>
+                <div class="h2" style="font-size:14px; display:flex; align-items:center; gap:8px;">
+                  <div style="width:30px;height:30px;border-radius:8px;background:rgba(47,93,80,0.08);display:flex;align-items:center;justify-content:center;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 18l-6.2 3 1.2-6.8L2 9.3l6.9-1L12 2z" fill="#2F5D50"/></svg>
+                  </div>
+                  Public Leaderboard
+                </div>
                 <div class="toggle" id="dash-social" onclick="toggleSwitch('dash-social')"><div class="knob"></div></div>
               </div>
               <div class="card row between">
-                <div class="h2" style="font-size:14px;">🛍️ Personalized Advertising</div>
+                <div class="h2" style="font-size:14px; display:flex; align-items:center; gap:8px;">
+                  <div style="width:30px;height:30px;border-radius:8px;background:rgba(47,93,80,0.08);display:flex;align-items:center;justify-content:center;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="21" r="1" fill="#2F5D50"/><circle cx="20" cy="21" r="1" fill="#2F5D50"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" stroke="#2F5D50" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+                  </div>
+                  Personalized Ads
+                </div>
                 <div class="toggle" id="dash-ads" onclick="toggleSwitch('dash-ads')"><div class="knob"></div></div>
               </div>
               <div class="card row between">
-                <div class="h2" style="font-size:14px;">📈 Analytics Data</div>
+                <div class="h2" style="font-size:14px; display:flex; align-items:center; gap:8px;">
+                  <div style="width:30px;height:30px;border-radius:8px;background:rgba(47,93,80,0.08);display:flex;align-items:center;justify-content:center;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="#2F5D50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  Analytics Data
+                </div>
                 <div class="toggle" id="dash-analytics" onclick="toggleSwitch('dash-analytics')"><div class="knob"></div></div>
               </div>
             </div>
@@ -1536,32 +1836,48 @@
     const kidToastText = document.getElementById('kidToastText');
 
     if (decision === 'approved' && userConsent.voice) {
-      mascot.textContent = '🎉';
+      mascot.textContent = '';
+      mascot.innerHTML = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#FFC93C"/></svg>';
       title.textContent = 'Permission Approved!';
       desc.textContent = 'Your parent approved Speaking Practice. You can now use voice exercises.';
-      kidToastText.textContent = 'Speaking Lessons Unlocked! 🎉';
+      kidToastText.textContent = 'Speaking Lessons Unlocked!';
       
       // Update status badges
-      document.getElementById('statusSpeaking').textContent = '✅';
-      document.getElementById('activeStatusSpeaking').textContent = '✅';
-      document.getElementById('homeBadge').textContent = '✓ Voice Active';
+      document.getElementById('statusSpeaking').textContent = 'Active';
+      document.getElementById('statusSpeaking').style.color = '#3FBF7F';
+      document.getElementById('statusSpeaking').style.background = '#E8F8F0';
+      document.getElementById('activeStatusSpeaking').textContent = 'Active';
+      document.getElementById('activeStatusSpeaking').style.color = '#3FBF7F';
+      document.getElementById('activeStatusSpeaking').style.background = '#E8F8F0';
+      document.getElementById('homeBadge').innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#2A7A4E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Voice Active';
       document.getElementById('homeBadge').className = 'badge verified';
     } else {
-      mascot.textContent = '📚';
+      mascot.textContent = '';
+      mascot.innerHTML = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M4 19h16M4 5h16M4 12h16" stroke="#2B2B2B" stroke-width="2" stroke-linecap="round"/></svg>';
       title.textContent = 'All Good!';
       desc.textContent = 'Your parent said not yet. Speaking Lessons will stay locked for now, but reading & listening are still active.';
       kidToastText.textContent = 'Mic permissions declined.';
       
-      document.getElementById('statusSpeaking').textContent = '🔒';
-      document.getElementById('activeStatusSpeaking').textContent = '🔒';
-      document.getElementById('homeBadge').textContent = '🔒 Safe Mode';
+      document.getElementById('statusSpeaking').textContent = 'Locked';
+      document.getElementById('statusSpeaking').style.color = '#9A6B2E';
+      document.getElementById('statusSpeaking').style.background = '#FDF0DD';
+      document.getElementById('activeStatusSpeaking').textContent = 'Locked';
+      document.getElementById('activeStatusSpeaking').style.color = '#9A6B2E';
+      document.getElementById('activeStatusSpeaking').style.background = '#FDF0DD';
+      document.getElementById('homeBadge').innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="11" rx="2" fill="#9A6B2E"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#9A6B2E" stroke-width="2" fill="none"/></svg> Safe Mode';
       document.getElementById('homeBadge').className = 'badge locked';
     }
 
     // Sync Social leaderboards
-    const checkIcon = userConsent.social ? '✅' : '🔒';
+    const checkIcon = userConsent.social ? 'Active' : 'Locked';
+    const checkColor = userConsent.social ? '#3FBF7F' : '#9A6B2E';
+    const checkBg = userConsent.social ? '#E8F8F0' : '#FDF0DD';
     document.getElementById('statusLeaderboards').textContent = checkIcon;
+    document.getElementById('statusLeaderboards').style.color = checkColor;
+    document.getElementById('statusLeaderboards').style.background = checkBg;
     document.getElementById('activeStatusLeaderboards').textContent = checkIcon;
+    document.getElementById('activeStatusLeaderboards').style.color = checkColor;
+    document.getElementById('activeStatusLeaderboards').style.background = checkBg;
 
     changeKidView(9);
     
@@ -1607,20 +1923,32 @@
     userConsent.analytics = document.getElementById('dash-analytics').classList.contains('on');
     
     // Live update kid views
-    const checkVoice = userConsent.voice ? '✅' : '🔒';
-    const checkSocial = userConsent.social ? '✅' : '🔒';
+    const checkVoice = userConsent.voice ? 'Active' : 'Locked';
+    const checkSocial = userConsent.social ? 'Active' : 'Locked';
+    const voiceColor = userConsent.voice ? '#3FBF7F' : '#9A6B2E';
+    const socialColor = userConsent.social ? '#3FBF7F' : '#9A6B2E';
+    const voiceBg = userConsent.voice ? '#E8F8F0' : '#FDF0DD';
+    const socialBg = userConsent.social ? '#E8F8F0' : '#FDF0DD';
     
     document.getElementById('statusSpeaking').textContent = checkVoice;
+    document.getElementById('statusSpeaking').style.color = voiceColor;
+    document.getElementById('statusSpeaking').style.background = voiceBg;
     document.getElementById('activeStatusSpeaking').textContent = checkVoice;
+    document.getElementById('activeStatusSpeaking').style.color = voiceColor;
+    document.getElementById('activeStatusSpeaking').style.background = voiceBg;
     document.getElementById('statusLeaderboards').textContent = checkSocial;
+    document.getElementById('statusLeaderboards').style.color = socialColor;
+    document.getElementById('statusLeaderboards').style.background = socialBg;
     document.getElementById('activeStatusLeaderboards').textContent = checkSocial;
+    document.getElementById('activeStatusLeaderboards').style.color = socialColor;
+    document.getElementById('activeStatusLeaderboards').style.background = socialBg;
 
     const badge = document.getElementById('homeBadge');
     if (userConsent.voice) {
-      badge.textContent = '✓ Voice Active';
+      badge.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#2A7A4E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Voice Active';
       badge.className = 'badge verified';
     } else {
-      badge.textContent = '🔒 Safe Mode';
+      badge.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="11" rx="2" fill="#9A6B2E"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#9A6B2E" stroke-width="2" fill="none"/></svg> Safe Mode';
       badge.className = 'badge locked';
     }
 
@@ -1781,10 +2109,10 @@
     document.getElementById('highlight-granular-cards').classList.remove('highlight-pulse-gd');
     
     // Sync initial labels
-    document.getElementById('statusSpeaking').textContent = '🔒';
-    document.getElementById('statusLeaderboards').textContent = '🔒';
-    document.getElementById('activeStatusSpeaking').textContent = '🔒';
-    document.getElementById('activeStatusLeaderboards').textContent = '🔒';
+    document.getElementById('statusSpeaking').textContent = 'Locked';
+    document.getElementById('statusLeaderboards').textContent = 'Locked';
+    document.getElementById('activeStatusSpeaking').textContent = 'Locked';
+    document.getElementById('activeStatusLeaderboards').textContent = 'Locked';
     
     document.getElementById('xpCounter').textContent = `🔥 Streak: 3d · 🏆 45XP`;
     document.getElementById('activeXpCounter').textContent = `🔥 Streak: 3d · 🏆 45XP`;
