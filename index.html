@@ -36,7 +36,11 @@
   
   body {
     min-height: 100vh;
-    background: radial-gradient(circle at top right, #1F2438 0%, #0F111A 100%);
+    background: radial-gradient(ellipse at 20% 0%,
+      #1A1040 0%,
+      #0D0F1E 40%,
+      #090B14 70%,
+      #060810 100%);
     color: #F3F4F6;
     display: flex;
     align-items: center;
@@ -44,7 +48,58 @@
     font-family: 'Inter', sans-serif;
     padding: 30px;
     overflow-x: hidden;
+    position: relative;
   }
+
+  /* ─── Ambient Background Orbs (CSS-only, no JS) ─── */
+  body::before,
+  body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(90px);
+  }
+  /* Top-right: warm amber-orange nebula */
+  body::before {
+    width: 750px;
+    height: 750px;
+    background: radial-gradient(circle,
+      rgba(160, 80, 255, 0.12) 0%,
+      rgba(255, 107, 74, 0.08) 45%,
+      transparent 70%);
+    top: -200px;
+    right: -200px;
+    animation: orbDrift1 18s ease-in-out infinite alternate;
+  }
+  /* Bottom-left: cool teal-cyan nebula */
+  body::after {
+    width: 640px;
+    height: 640px;
+    background: radial-gradient(circle,
+      rgba(56, 189, 248, 0.09) 0%,
+      rgba(63, 191, 127, 0.07) 50%,
+      transparent 70%);
+    bottom: -160px;
+    left: -160px;
+    animation: orbDrift2 22s ease-in-out infinite alternate;
+  }
+
+  @keyframes orbDrift1 {
+    0%   { transform: translate(0, 0) scale(1); }
+    33%  { transform: translate(-60px, 40px) scale(1.08); }
+    66%  { transform: translate(40px, 80px) scale(0.95); }
+    100% { transform: translate(-20px, -40px) scale(1.04); }
+  }
+  @keyframes orbDrift2 {
+    0%   { transform: translate(0, 0) scale(1); }
+    40%  { transform: translate(50px, -50px) scale(1.1); }
+    80%  { transform: translate(-30px, 30px) scale(0.92); }
+    100% { transform: translate(20px, -20px) scale(1.05); }
+  }
+
+
 
   /* Main Workspace Grid */
   .workspace {
@@ -54,6 +109,8 @@
     gap: 40px;
     align-items: stretch;
     justify-content: center;
+    position: relative;
+    z-index: 1;
   }
 
   /* Educational Sidebar */
@@ -70,6 +127,11 @@
     flex-direction: column;
     gap: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    transition: box-shadow 0.4s ease, border-color 0.4s ease;
+  }
+  .edu-panel:hover {
+    box-shadow: 0 28px 56px rgba(0,0,0,0.5);
+    border-color: rgba(255,255,255,0.14);
   }
 
   .edu-tag {
@@ -114,7 +176,7 @@
     border-radius: 16px;
     padding: 16px;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -123,14 +185,10 @@
   .edu-feature-card:hover {
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08);
   }
 
-  .edu-feature-card.active-highlight {
-    border-color: var(--kid-primary);
-    background: rgba(255, 107, 74, 0.05);
-    box-shadow: 0 0 15px rgba(255, 107, 74, 0.2);
-  }
 
   .edu-feature-header {
     display: flex;
@@ -432,12 +490,17 @@
     flex-direction: column;
     gap: 4px;
     backdrop-filter: blur(15px);
-    transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 0.4s ease;
     cursor: pointer;
+    transform-origin: top center;
+    opacity: 0;
+    transform: translateY(0) rotateX(-40deg) scale(0.9);
   }
 
   .notification-toast.visible {
-    transform: translateY(140px);
+    transform: translateY(140px) rotateX(0deg) scale(1);
+    opacity: 1;
   }
 
   .nt-header {
@@ -939,9 +1002,227 @@
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* ═══════════════════════════════════════════════
+     PROFESSIONAL ANIMATION SYSTEM
+  ═══════════════════════════════════════════════ */
+
+  /* ── Entrance keyframes ── */
+  @keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.88); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Entrance trigger classes (added by JS) ── */
+  .anim-hidden {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  .anim-slide-left { opacity: 0; transform: translateX(-40px); }
+  .anim-slide-right { opacity: 0; transform: translateX(40px); }
+  .anim-scale { opacity: 0; transform: scale(0.9); }
+
+  .anim-in {
+    animation: slideUpFade 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .anim-in-left {
+    animation: slideInLeft 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .anim-in-right {
+    animation: slideInRight 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .anim-in-scale {
+    animation: scaleIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Stagger delays */
+  .delay-1 { animation-delay: 0.08s; }
+  .delay-2 { animation-delay: 0.18s; }
+  .delay-3 { animation-delay: 0.28s; }
+  .delay-4 { animation-delay: 0.40s; }
+  .delay-5 { animation-delay: 0.54s; }
+
+  /* ── Button shimmer on hover ── */
+  .kid .btn-primary,
+  .gd .btn-primary {
+    position: relative;
+    overflow: hidden;
+  }
+  .kid .btn-primary::before,
+  .gd .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(255,255,255,0.22), transparent);
+    transition: left 0.5s ease;
+    pointer-events: none;
+  }
+  .kid .btn-primary:hover::before,
+  .gd .btn-primary:hover::before {
+    left: 150%;
+  }
+
+  /* ── Card lift with glow ── */
+  .kid .card {
+    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.28s ease;
+  }
+  .kid .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px rgba(224, 83, 47, 0.12);
+  }
+  .gd .card {
+    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.28s ease;
+  }
+  .gd .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(47,93,80,0.1);
+  }
+
+  /* ── Phone entrance ── */
+  .phone-wrap {
+    opacity: 0;
+    animation: scaleIn 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  .phone-wrap:nth-child(1) { animation-delay: 0.2s; }
+  .phone-wrap:nth-child(2) { animation-delay: 0.38s; }
+
+  /* ── Edu panel entrance ── */
+  .edu-panel {
+    opacity: 0;
+    animation: slideInLeft 0.7s cubic-bezier(0.22,1,0.36,1) 0.08s forwards;
+  }
+
+  /* ── Edu feature cards staggered ── */
+  .edu-feature-card:nth-child(1) { animation: fadeSlideUp 0.55s ease 0.4s both; }
+  .edu-feature-card:nth-child(2) { animation: fadeSlideUp 0.55s ease 0.52s both; }
+  .edu-feature-card:nth-child(3) { animation: fadeSlideUp 0.55s ease 0.64s both; }
+
+  /* ── Phone label dot continuous pulse ── */
+  .phone-label::before {
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.6); box-shadow: 0 0 10px #4ADE80; }
+  }
+
+  /* ── Active edu-feature-card highlight glow ── */
+  .edu-feature-card.active-highlight {
+    border-color: var(--kid-primary);
+    background: rgba(255, 107, 74, 0.05);
+    box-shadow: 0 0 20px rgba(255, 107, 74, 0.18), inset 0 0 12px rgba(255,107,74,0.04);
+    animation: cardGlowPulse 2s ease-in-out infinite;
+  }
+  @keyframes cardGlowPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,107,74,0.18), inset 0 0 12px rgba(255,107,74,0.04); }
+    50%       { box-shadow: 0 0 32px rgba(255,107,74,0.32), inset 0 0 18px rgba(255,107,74,0.08); }
+  }
+
+  /* ── View transition refinement ── */
+  .view {
+    transition: opacity 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ── Mascot wobble on hover ── */
+  .mascot {
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    cursor: default;
+  }
+  .mascot:hover {
+    transform: rotate(-8deg) scale(1.1);
+  }
+
+  /* ── Highlight badge pulse ── */
+  .highlight-badge {
+    animation: badgeFade 3s ease-in-out infinite;
+  }
+  @keyframes badgeFade {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.65; }
+  }
+
+  /* ── Notification toast improved spring ── */
+  .notification-toast {
+    transition: transform 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.35),
+                opacity 0.4s ease;
+  }
+
+  /* ── Toggle switch animation enhancement ── */
+  .toggle {
+    transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease;
+  }
+  .toggle.on {
+    box-shadow: 0 0 0 3px rgba(47, 93, 80, 0.18);
+  }
+  .toggle .knob {
+    transition: left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease;
+  }
+  .toggle.on .knob {
+    box-shadow: 0 2px 8px rgba(47,93,80,0.35);
+  }
+
+  /* ── Shimmer on edu-tag ── */
+  .edu-tag {
+    position: relative;
+    overflow: hidden;
+  }
+  .edu-tag::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(255,133,107,0.3), transparent);
+    animation: tagShimmer 3.5s ease-in-out infinite;
+  }
+  @keyframes tagShimmer {
+    0%   { left: -100%; }
+    40%, 100% { left: 200%; }
+  }
+
+  /* ── Bottom border progress line on phone ── */
+  .phone::before {
+    transition: opacity 0.3s ease;
+  }
+
+  /* ── Floating badge on phone-label ── */
+  .phone-label {
+    transition: opacity 0.3s ease, color 0.3s ease;
+    animation: labelFloat 5s ease-in-out infinite;
+  }
+  @keyframes labelFloat {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-3px); }
+  }
+
 </style>
 </head>
 <body>
+
+
 
 <div class="workspace">
   
@@ -997,7 +1278,7 @@
     <!-- DEVICE 1: CHILD DEVICE (AISHA) -->
     <div class="phone-wrap">
       <div class="phone-label">Aisha · Child Account (12)</div>
-      <div class="phone">
+      <div class="phone" id="phoneKid">
         <div class="phone-vol-btn v1"></div>
         <div class="phone-vol-btn v2"></div>
         <div class="phone-vol-btn v3"></div>
@@ -1322,13 +1603,14 @@
 
           <div class="home-indicator"></div>
         </div>
+
       </div>
     </div>
 
     <!-- DEVICE 2: GUARDIAN DEVICE (PRIYA) -->
     <div class="phone-wrap">
       <div class="phone-label">Priya · Parent Device</div>
-      <div class="phone">
+      <div class="phone" id="phoneParent">
         <div class="phone-vol-btn v1"></div>
         <div class="phone-vol-btn v2"></div>
         <div class="phone-vol-btn v3"></div>
@@ -1561,6 +1843,7 @@
 
           <div class="home-indicator"></div>
         </div>
+
       </div>
     </div>
 
@@ -2127,5 +2410,262 @@
   }
 </script>
 
+<script>
+/* ================================================================
+   ANIMATION INITIALIZER — purely cosmetic, zero UX side-effects
+================================================================ */
+(function () {
+  'use strict';
+
+  // ── 1. CLICK RIPPLE on all interactive buttons ──────────────────
+  function spawnRipple(e) {
+    const btn  = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 1.9;
+    const x    = e.clientX - rect.left - size / 2;
+    const y    = e.clientY - rect.top  - size / 2;
+    const el   = document.createElement('span');
+    el.style.cssText = [
+      `position:absolute`,
+      `left:${x}px`, `top:${y}px`,
+      `width:${size}px`, `height:${size}px`,
+      `border-radius:50%`,
+      `background:rgba(255,255,255,0.2)`,
+      `transform:scale(0)`,
+      `animation:_ripple 0.6s cubic-bezier(0.23,1,0.32,1) forwards`,
+      `pointer-events:none`,
+      `z-index:999`
+    ].join(';');
+    if (getComputedStyle(btn).position === 'static') btn.style.position = 'relative';
+    btn.style.overflow = 'hidden';
+    btn.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+
+  // Inject ripple keyframe once
+  const ks = document.createElement('style');
+  ks.textContent = `@keyframes _ripple { to { transform:scale(1); opacity:0; } }`;
+  document.head.appendChild(ks);
+
+  document.querySelectorAll('.btn-primary,.btn-secondary,.btn-decline,.btn-ghost').forEach(btn => {
+    btn.addEventListener('click', spawnRipple);
+  });
+
+  // ── 2. PHONE IDLE BREATH — subtle scale pulse on phones ─────────
+  const phones = document.querySelectorAll('.phone');
+  const breathKF = document.createElement('style');
+  breathKF.textContent = `
+    @keyframes phoneBreathe {
+      0%,100% { box-shadow:
+        0 40px 80px -20px rgba(0,0,0,0.9),
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 0 0 3px #22263A,
+        0 0 0 4px rgba(255,255,255,0.04),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 -1px 0 rgba(0,0,0,0.4); }
+      50% { box-shadow:
+        0 52px 90px -20px rgba(0,0,0,0.75),
+        0 0 0 1px rgba(255,255,255,0.10),
+        0 0 0 3px #2a2f48,
+        0 0 0 4px rgba(255,255,255,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.18),
+        inset 0 -1px 0 rgba(0,0,0,0.3),
+        0 0 40px rgba(255,107,74,0.06); }
+    }
+  `;
+  document.head.appendChild(breathKF);
+  phones.forEach((p, i) => {
+    p.style.animation = `phoneBreathe ${7 + i * 2}s ease-in-out infinite`;
+    p.style.animationDelay = `${i * 1.5}s`;
+  });
+
+  // ── 3. VIEW CHANGE FLASH — brief screen-light pulse on transitions ──
+  const origChangeKid    = window.changeKidView;
+  const origChangeParent = window.changeParentView;
+
+  function flashScreen(screenEl) {
+    const flash = document.createElement('div');
+    flash.style.cssText = `
+      position:absolute;inset:0;border-radius:40px;
+      background:rgba(255,255,255,0.07);
+      pointer-events:none;z-index:200;
+      animation:_screenFlash 0.35s ease forwards;
+    `;
+    screenEl.appendChild(flash);
+    flash.addEventListener('animationend', () => flash.remove());
+  }
+
+  const flashKF = document.createElement('style');
+  flashKF.textContent = `@keyframes _screenFlash { 0%{opacity:1} 100%{opacity:0} }`;
+  document.head.appendChild(flashKF);
+
+  window.changeKidView = function (n) {
+    const s = document.getElementById('screenKid');
+    if (s) flashScreen(s);
+    return origChangeKid(n);
+  };
+  window.changeParentView = function (n) {
+    const s = document.getElementById('screenParent');
+    if (s) flashScreen(s);
+    return origChangeParent(n);
+  };
+
+  // ── 4. XP COUNTER ROLL — animates XP number up on change ────────
+  function rollCounter(el, from, to, duration) {
+    if (!el) return;
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3); // cubic ease-out
+      const val  = Math.round(from + (to - from) * ease);
+      el.textContent = el.textContent.replace(/\d+XP/, val + 'XP');
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Patch XP update calls to roll
+  const origEarnXp = window.earnXpAndCelebrate || null;
+  if (origEarnXp) {
+    window.earnXpAndCelebrate = function (...args) {
+      const before = window.currentXp || 45;
+      origEarnXp.apply(this, args);
+      const after  = window.currentXp || before;
+      ['xpCounter','activeXpCounter'].forEach(id => {
+        rollCounter(document.getElementById(id), before, after, 600);
+      });
+    };
+  }
+
+  // ── 5. HOVER TINT on edu-panel cards (light sweep) ───────────────
+  document.querySelectorAll('.edu-feature-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r    = card.getBoundingClientRect();
+      const px   = ((e.clientX - r.left) / r.width)  * 100;
+      const py   = ((e.clientY - r.top)  / r.height) * 100;
+      card.style.background = `radial-gradient(circle at ${px}% ${py}%,
+        rgba(255,255,255,0.055) 0%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(255,255,255,0.01) 100%)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.background = '';
+    });
+  });
+
+  // ── 6. AMBIENT THIRD ORB — violet/indigo midfield ──────────────
+  const orb3 = document.createElement('div');
+  orb3.style.cssText = `
+    position:fixed;pointer-events:none;z-index:0;
+    border-radius:50%;
+    width:500px;height:500px;
+    top:38%;left:42%;
+    background:radial-gradient(circle, rgba(120,80,255,0.08) 0%, rgba(88,166,255,0.05) 50%, transparent 70%);
+    filter:blur(70px);
+    animation:orbDrift3 26s ease-in-out infinite alternate;
+  `;
+  const kf3 = document.createElement('style');
+  kf3.textContent = `@keyframes orbDrift3 {
+    0%   { transform:translate(0,0) scale(1); }
+    50%  { transform:translate(-70px,40px) scale(1.15); }
+    100% { transform:translate(40px,-60px) scale(0.88); }
+  }`;
+  document.head.appendChild(kf3);
+  document.body.insertBefore(orb3, document.body.firstChild);
+
+  // ── 7. STAR FIELD CANVAS ────────────────────────────────────────
+  (function buildStarField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = `
+      position:fixed;inset:0;
+      pointer-events:none;z-index:0;
+      opacity:1;
+    `;
+    document.body.insertBefore(canvas, document.body.firstChild);
+
+    const ctx = canvas.getContext('2d');
+    let W, H;
+
+    // Star colour palette — cool whites, pale blues, warm golds
+    const PALETTES = [
+      [210, 30, 95],  // icy blue-white
+      [240, 20, 90],  // periwinkle
+      [200, 40, 92],  // sky blue
+      [50,  25, 96],  // warm golden
+      [280, 15, 88],  // lavender
+      [0,    0, 100], // pure white
+    ];
+
+    const STAR_COUNT = 160;
+    const stars = [];
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', () => { resize(); buildStars(); });
+
+    function buildStars() {
+      stars.length = 0;
+      for (let i = 0; i < STAR_COUNT; i++) {
+        const [h, s, l] = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+        stars.push({
+          x:     Math.random() * W,
+          y:     Math.random() * H,
+          r:     Math.random() * 1.1 + 0.2,      // radius 0.2 – 1.3 px
+          base:  Math.random() * 0.55 + 0.15,    // base opacity
+          phase: Math.random() * Math.PI * 2,    // twinkle phase
+          speed: Math.random() * 0.008 + 0.003,  // twinkle speed
+          h, s, l,
+          // A few "brighter" accent stars
+          accent: Math.random() < 0.08,
+        });
+      }
+    }
+    buildStars();
+
+    let frame = 0;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      frame++;
+
+      stars.forEach(st => {
+        st.phase += st.speed;
+        // Smooth sine twinkle
+        const twinkle = 0.5 + 0.5 * Math.sin(st.phase);
+        const alpha   = st.base * (0.45 + 0.55 * twinkle);
+        const radius  = st.accent
+          ? st.r * (1.4 + 0.4 * twinkle)  // accents bloom a bit
+          : st.r;
+
+        ctx.beginPath();
+        // Soft radial glow for accent stars
+        if (st.accent) {
+          const grd = ctx.createRadialGradient(
+            st.x, st.y, 0,
+            st.x, st.y, radius * 3.5
+          );
+          grd.addColorStop(0,   `hsla(${st.h},${st.s}%,${st.l}%,${alpha})`);
+          grd.addColorStop(0.4, `hsla(${st.h},${st.s}%,${st.l}%,${alpha * 0.3})`);
+          grd.addColorStop(1,   `hsla(${st.h},${st.s}%,${st.l}%,0)`);
+          ctx.arc(st.x, st.y, radius * 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = grd;
+        } else {
+          ctx.arc(st.x, st.y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${st.h},${st.s}%,${st.l}%,${alpha})`;
+        }
+        ctx.fill();
+      });
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+})();
+</script>
+
 </body>
 </html>
+
